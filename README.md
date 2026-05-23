@@ -1,2 +1,25 @@
 # infra-skill-trail
 スキル管理アプリのインフラリポジトリ
+
+## Terraform version
+
+このリポジトリではTerraform `1.15.4` 系を使う。
+
+```bash
+terraform version
+```
+
+`1.14.x` など古いTerraformでは `required_version = "~> 1.15.4"` により `terraform init` が失敗する。
+Terraformを `1.15.4` に更新してから実行する。
+
+## Terraform state
+
+tfstateはS3 backendでチーム共有する。
+
+```bash
+cd environments/dev
+cp backend.example.hcl backend.hcl
+terraform init -backend-config=backend.hcl
+```
+
+`backend.hcl` はローカル設定としてGit管理しない。実際に使うS3 bucketは事前に作成しておく。
