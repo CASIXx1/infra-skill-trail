@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph dev["environments/dev"]
+    network_module["module.network"]
+  end
+
+  subgraph network["modules/network"]
+    vpc["aws_vpc.this"]
+    igw["aws_internet_gateway.this"]
+  end
+
+  network_module --> vpc
+  igw --> vpc
