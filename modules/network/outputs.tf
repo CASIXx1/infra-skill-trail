@@ -12,3 +12,8 @@ output "internet_gateway_id" {
   description = "Internet Gateway ID."
   value       = aws_internet_gateway.this.id
 }
+
+output "public_1a_subnet_id" {
+  description = "Public subnet ID in ap-northeast-1a."
+  value       = aws_subnet.public_1a.id
+}

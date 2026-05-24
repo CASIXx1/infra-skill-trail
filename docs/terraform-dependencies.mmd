@@ -6,7 +6,9 @@ flowchart LR
   subgraph network["modules/network"]
     vpc["aws_vpc.this"]
     igw["aws_internet_gateway.this"]
+    public_1a["aws_subnet.public_1a"]
   end
 
   network_module --> vpc
   igw --> vpc
+  public_1a --> vpc
