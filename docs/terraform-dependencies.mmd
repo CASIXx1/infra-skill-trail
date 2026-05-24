@@ -10,6 +10,8 @@ flowchart LR
     public_1c["aws_subnet.public_1c"]
     public_rt["aws_route_table.public"]
     public_internet_route["aws_route.public_internet"]
+    public_1a_assoc["aws_route_table_association.public_1a"]
+    public_1c_assoc["aws_route_table_association.public_1c"]
   end
 
   network_module --> vpc
@@ -19,3 +21,7 @@ flowchart LR
   public_rt --> vpc
   public_internet_route --> public_rt
   public_internet_route --> igw
+  public_1a_assoc --> public_1a
+  public_1a_assoc --> public_rt
+  public_1c_assoc --> public_1c
+  public_1c_assoc --> public_rt
