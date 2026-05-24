@@ -8,6 +8,8 @@ flowchart LR
     igw["aws_internet_gateway.this"]
     public_1a["aws_subnet.public_1a"]
     public_1c["aws_subnet.public_1c"]
+    private_1a["aws_subnet.private_1a"]
+    private_1c["aws_subnet.private_1c"]
     public_rt["aws_route_table.public"]
     public_internet_route["aws_route.public_internet"]
     public_1a_assoc["aws_route_table_association.public_1a"]
@@ -18,6 +20,8 @@ flowchart LR
   igw --> vpc
   public_1a --> vpc
   public_1c --> vpc
+  private_1a --> vpc
+  private_1c --> vpc
   public_rt --> vpc
   public_internet_route --> public_rt
   public_internet_route --> igw
