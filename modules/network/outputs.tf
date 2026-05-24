@@ -33,6 +33,16 @@ output "private_1c_subnet_id" {
   value       = aws_subnet.private_1c.id
 }
 
+output "database_1a_subnet_id" {
+  description = "Database subnet ID in ap-northeast-1a."
+  value       = aws_subnet.database_1a.id
+}
+
+output "database_1c_subnet_id" {
+  description = "Database subnet ID in ap-northeast-1c."
+  value       = aws_subnet.database_1c.id
+}
+
 output "public_route_table_id" {
   description = "Public route table ID."
   value       = aws_route_table.public.id
