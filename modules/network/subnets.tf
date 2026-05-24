@@ -1,21 +1,3 @@
-resource "aws_vpc" "this" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-  tags = {
-    Name = var.name
-  }
-}
-
-resource "aws_internet_gateway" "this" {
-  vpc_id = aws_vpc.this.id
-
-  tags = {
-    Name = "${var.name}-igw"
-  }
-}
-
 resource "aws_subnet" "public_1a" {
   vpc_id                  = aws_vpc.this.id
   availability_zone       = "ap-northeast-1a"
@@ -104,28 +86,4 @@ resource "aws_subnet" "cache_1c" {
     Name = "${var.name}-cache-1c"
     Tier = "cache"
   }
-}
-
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.this.id
-
-  tags = {
-    Name = "${var.name}-public"
-  }
-}
-
-resource "aws_route" "public_internet" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.this.id
-}
-
-resource "aws_route_table_association" "public_1a" {
-  subnet_id      = aws_subnet.public_1a.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "public_1c" {
-  subnet_id      = aws_subnet.public_1c.id
-  route_table_id = aws_route_table.public.id
 }

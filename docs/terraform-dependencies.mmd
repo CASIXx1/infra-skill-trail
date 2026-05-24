@@ -1,39 +1,23 @@
-flowchart LR
-  subgraph dev["environments/dev"]
-    network_module["module.network"]
+flowchart TB
+  root["environments/dev"]
+
+  subgraph vpc["VPC 10.20.0.0/16"]
+    igw["Internet Gateway"]
+
+    public["Public subnets\n10.20.0.0/24\n10.20.1.0/24"]
+    private["Private subnets\n10.20.10.0/24\n10.20.11.0/24"]
+    database["Database subnets\n10.20.20.0/24\n10.20.21.0/24"]
+    cache["Cache subnets\n10.20.30.0/24\n10.20.31.0/24"]
+
+    public_rt["Public route table\n0.0.0.0/0 -> IGW"]
+    private_rt["Private route table\nlocal only"]
+    database_rt["Database route table\nlocal only"]
+    cache_rt["Cache route table\nlocal only"]
   end
 
-  subgraph network["modules/network"]
-    vpc["aws_vpc.this"]
-    igw["aws_internet_gateway.this"]
-    public_1a["aws_subnet.public_1a"]
-    public_1c["aws_subnet.public_1c"]
-    private_1a["aws_subnet.private_1a"]
-    private_1c["aws_subnet.private_1c"]
-    database_1a["aws_subnet.database_1a"]
-    database_1c["aws_subnet.database_1c"]
-    cache_1a["aws_subnet.cache_1a"]
-    cache_1c["aws_subnet.cache_1c"]
-    public_rt["aws_route_table.public"]
-    public_internet_route["aws_route.public_internet"]
-    public_1a_assoc["aws_route_table_association.public_1a"]
-    public_1c_assoc["aws_route_table_association.public_1c"]
-  end
-
-  network_module --> vpc
-  igw --> vpc
-  public_1a --> vpc
-  public_1c --> vpc
-  private_1a --> vpc
-  private_1c --> vpc
-  database_1a --> vpc
-  database_1c --> vpc
-  cache_1a --> vpc
-  cache_1c --> vpc
-  public_rt --> vpc
-  public_internet_route --> public_rt
-  public_internet_route --> igw
-  public_1a_assoc --> public_1a
-  public_1a_assoc --> public_rt
-  public_1c_assoc --> public_1c
-  public_1c_assoc --> public_rt
+  root --> vpc
+  public --> public_rt
+  public_rt --> igw
+  private --> private_rt
+  database --> database_rt
+  cache --> cache_rt

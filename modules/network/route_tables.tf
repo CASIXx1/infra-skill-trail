@@ -1,0 +1,77 @@
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-public"
+  }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-private"
+  }
+}
+
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-database"
+  }
+}
+
+resource "aws_route_table" "cache" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-cache"
+  }
+}
+
+resource "aws_route" "public_internet" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.this.id
+}
+
+resource "aws_route_table_association" "public_1a" {
+  subnet_id      = aws_subnet.public_1a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_1c" {
+  subnet_id      = aws_subnet.public_1c.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "private_1a" {
+  subnet_id      = aws_subnet.private_1a.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_1c" {
+  subnet_id      = aws_subnet.private_1c.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "database_1a" {
+  subnet_id      = aws_subnet.database_1a.id
+  route_table_id = aws_route_table.database.id
+}
+
+resource "aws_route_table_association" "database_1c" {
+  subnet_id      = aws_subnet.database_1c.id
+  route_table_id = aws_route_table.database.id
+}
+
+resource "aws_route_table_association" "cache_1a" {
+  subnet_id      = aws_subnet.cache_1a.id
+  route_table_id = aws_route_table.cache.id
+}
+
+resource "aws_route_table_association" "cache_1c" {
+  subnet_id      = aws_subnet.cache_1c.id
+  route_table_id = aws_route_table.cache.id
+}
