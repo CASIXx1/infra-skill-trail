@@ -1,6 +1,15 @@
 flowchart TB
   root["environments/dev"]
 
+  subgraph ecr["ECR"]
+    api_repo["API repository"]
+    worker_repo["Worker repository"]
+  end
+
+  subgraph ecs["ECS"]
+    cluster["Cluster"]
+  end
+
   subgraph vpc["VPC 10.20.0.0/16"]
     igw["Internet Gateway"]
 
@@ -15,6 +24,8 @@ flowchart TB
     cache_rt["Cache route table\nlocal only"]
   end
 
+  root --> ecr
+  root --> ecs
   root --> vpc
   public --> public_rt
   public_rt --> igw
