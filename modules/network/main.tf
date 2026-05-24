@@ -84,6 +84,28 @@ resource "aws_subnet" "database_1c" {
   }
 }
 
+resource "aws_subnet" "cache_1a" {
+  vpc_id            = aws_vpc.this.id
+  availability_zone = "ap-northeast-1a"
+  cidr_block        = "10.20.30.0/24"
+
+  tags = {
+    Name = "${var.name}-cache-1a"
+    Tier = "cache"
+  }
+}
+
+resource "aws_subnet" "cache_1c" {
+  vpc_id            = aws_vpc.this.id
+  availability_zone = "ap-northeast-1c"
+  cidr_block        = "10.20.31.0/24"
+
+  tags = {
+    Name = "${var.name}-cache-1c"
+    Tier = "cache"
+  }
+}
+
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 

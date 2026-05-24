@@ -12,6 +12,8 @@ flowchart LR
     private_1c["aws_subnet.private_1c"]
     database_1a["aws_subnet.database_1a"]
     database_1c["aws_subnet.database_1c"]
+    cache_1a["aws_subnet.cache_1a"]
+    cache_1c["aws_subnet.cache_1c"]
     public_rt["aws_route_table.public"]
     public_internet_route["aws_route.public_internet"]
     public_1a_assoc["aws_route_table_association.public_1a"]
@@ -26,6 +28,8 @@ flowchart LR
   private_1c --> vpc
   database_1a --> vpc
   database_1c --> vpc
+  cache_1a --> vpc
+  cache_1c --> vpc
   public_rt --> vpc
   public_internet_route --> public_rt
   public_internet_route --> igw
