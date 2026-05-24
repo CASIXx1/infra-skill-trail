@@ -17,3 +17,13 @@ output "public_1a_subnet_id" {
   description = "Public subnet ID in ap-northeast-1a."
   value       = aws_subnet.public_1a.id
 }
+
+output "public_1c_subnet_id" {
+  description = "Public subnet ID in ap-northeast-1c."
+  value       = aws_subnet.public_1c.id
+}
+
+output "public_route_table_id" {
+  description = "Public route table ID."
+  value       = aws_route_table.public.id
+}

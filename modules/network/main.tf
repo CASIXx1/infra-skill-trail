@@ -27,3 +27,23 @@ resource "aws_subnet" "public_1a" {
     Tier = "public"
   }
 }
+
+resource "aws_subnet" "public_1c" {
+  vpc_id                  = aws_vpc.this.id
+  availability_zone       = "ap-northeast-1c"
+  cidr_block              = "10.20.1.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.name}-public-1c"
+    Tier = "public"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-public"
+  }
+}
