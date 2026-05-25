@@ -16,3 +16,9 @@ module "ecs_cluster" {
 
   name = local.name
 }
+
+module "ecs_iam" {
+  source = "../../modules/ecs-iam"
+
+  name = local.name
+}
