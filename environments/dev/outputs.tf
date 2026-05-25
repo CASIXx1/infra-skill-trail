@@ -37,3 +37,8 @@ output "ecs_task_execution_role_name" {
   description = "ECS task execution role name."
   value       = module.ecs_iam.task_execution_role_name
 }
+
+output "vpc_endpoint_security_group_id" {
+  description = "Security group ID attached to interface VPC endpoints."
+  value       = module.vpc_endpoints.interface_endpoint_security_group_id
+}

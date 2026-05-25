@@ -11,6 +11,13 @@ flowchart TB
     task_execution_role["Task execution role"]
   end
 
+  subgraph endpoints["VPC Endpoints"]
+    ecr_api["ECR API"]
+    ecr_dkr["ECR DKR"]
+    logs_endpoint["CloudWatch Logs"]
+    s3_gateway["S3 Gateway"]
+  end
+
   subgraph vpc["VPC 10.20.0.0/16"]
     igw["Internet Gateway"]
 
@@ -27,7 +34,10 @@ flowchart TB
 
   root --> ecr
   root --> ecs
+  root --> endpoints
   root --> vpc
+  endpoints --> private
+  s3_gateway --> private_rt
   public --> public_rt
   public_rt --> igw
   private --> private_rt

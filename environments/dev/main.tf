@@ -22,3 +22,13 @@ module "ecs_iam" {
 
   name = local.name
 }
+
+module "vpc_endpoints" {
+  source = "../../modules/vpc-endpoints"
+
+  name                   = local.name
+  vpc_id                 = module.network.vpc_id
+  vpc_cidr_block         = module.network.vpc_cidr_block
+  private_subnet_ids     = module.network.private_subnet_ids
+  private_route_table_id = module.network.private_route_table_id
+}
