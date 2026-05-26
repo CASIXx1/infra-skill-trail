@@ -1,0 +1,33 @@
+.idea/
+
+# Terraform working directories
+.terraform/
+**/.terraform/
+
+# Terraform state files
+terraform.tfstate
+terraform.tfstate.*
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Terraform plan files
+*.tfplan
+
+# Terraform local variable files. Commit *.tfvars.example instead.
+*.tfvars
+*.tfvars.json
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI config
+.terraformrc
+terraform.rc
+
+# Local backend config used by terraform init -backend-config=backend.hcl
+backend.hcl

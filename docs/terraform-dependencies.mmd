@@ -1,0 +1,23 @@
+flowchart TB
+  root["environments/dev"]
+
+  subgraph vpc["VPC 10.20.0.0/16"]
+    igw["Internet Gateway"]
+
+    public["Public subnets\n10.20.0.0/24\n10.20.1.0/24"]
+    private["Private subnets\n10.20.10.0/24\n10.20.11.0/24"]
+    database["Database subnets\n10.20.20.0/24\n10.20.21.0/24"]
+    cache["Cache subnets\n10.20.30.0/24\n10.20.31.0/24"]
+
+    public_rt["Public route table\n0.0.0.0/0 -> IGW"]
+    private_rt["Private route table\nlocal only"]
+    database_rt["Database route table\nlocal only"]
+    cache_rt["Cache route table\nlocal only"]
+  end
+
+  root --> vpc
+  public --> public_rt
+  public_rt --> igw
+  private --> private_rt
+  database --> database_rt
+  cache --> cache_rt
