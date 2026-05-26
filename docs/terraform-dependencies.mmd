@@ -1,6 +1,29 @@
 flowchart TB
   root["environments/dev"]
 
+  subgraph ecr["ECR"]
+    api_repo["API repository"]
+    worker_repo["Worker repository"]
+  end
+
+  subgraph ecs["ECS"]
+    cluster["Cluster"]
+    task_execution_role["Task execution role"]
+    task_role["Task role"]
+  end
+
+  subgraph endpoints["VPC Endpoints"]
+    ecr_api["ECR API"]
+    ecr_dkr["ECR DKR"]
+    logs_endpoint["CloudWatch Logs"]
+    s3_gateway["S3 Gateway"]
+  end
+
+  subgraph security["Security Groups"]
+    vpce_sg["VPC Endpoint SG"]
+    ecs_task_sg["ECS Task SG"]
+  end
+
   subgraph vpc["VPC 10.20.0.0/16"]
     igw["Internet Gateway"]
 
@@ -15,7 +38,14 @@ flowchart TB
     cache_rt["Cache route table\nlocal only"]
   end
 
+  root --> ecr
+  root --> ecs
+  root --> endpoints
+  root --> security
   root --> vpc
+  security --> endpoints
+  endpoints --> private
+  s3_gateway --> private_rt
   public --> public_rt
   public_rt --> igw
   private --> private_rt
