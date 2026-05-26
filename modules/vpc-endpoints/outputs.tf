@@ -1,8 +1,3 @@
-output "interface_endpoint_security_group_id" {
-  description = "Security group ID attached to interface VPC endpoints."
-  value       = aws_security_group.interface_endpoint.id
-}
-
 output "ecr_api_endpoint_id" {
   description = "ECR API VPC endpoint ID."
   value       = aws_vpc_endpoint.interface["ecr_api"].id

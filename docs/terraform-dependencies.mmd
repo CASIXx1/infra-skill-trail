@@ -18,6 +18,10 @@ flowchart TB
     s3_gateway["S3 Gateway"]
   end
 
+  subgraph security["Security Groups"]
+    vpce_sg["VPC Endpoint SG"]
+  end
+
   subgraph vpc["VPC 10.20.0.0/16"]
     igw["Internet Gateway"]
 
@@ -35,7 +39,9 @@ flowchart TB
   root --> ecr
   root --> ecs
   root --> endpoints
+  root --> security
   root --> vpc
+  security --> endpoints
   endpoints --> private
   s3_gateway --> private_rt
   public --> public_rt
