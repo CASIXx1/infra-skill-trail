@@ -9,6 +9,7 @@ flowchart TB
   subgraph ecs["ECS"]
     cluster["Cluster"]
     task_execution_role["Task execution role"]
+    task_role["Task role"]
   end
 
   subgraph endpoints["VPC Endpoints"]
@@ -20,6 +21,7 @@ flowchart TB
 
   subgraph security["Security Groups"]
     vpce_sg["VPC Endpoint SG"]
+    ecs_task_sg["ECS Task SG"]
   end
 
   subgraph vpc["VPC 10.20.0.0/16"]
