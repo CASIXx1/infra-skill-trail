@@ -17,10 +17,17 @@ module "ecs_cluster" {
   name = local.name
 }
 
+module "ecs_logs" {
+  source = "../../modules/ecs-logs"
+
+  name = local.name
+}
+
 module "ecs_iam" {
   source = "../../modules/ecs-iam"
 
-  name = local.name
+  name              = local.name
+  api_log_group_arn = module.ecs_logs.api_log_group_arn
 }
 
 module "security_groups" {

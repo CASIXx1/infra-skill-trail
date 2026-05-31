@@ -23,3 +23,12 @@ terraform init -backend-config=backend.hcl
 ```
 
 `backend.hcl` はローカル設定としてGit管理しない。実際に使うS3 bucketは事前に作成しておく。
+
+## Application repositories
+
+- Backend: https://github.com/CASIXx1/backend-skill-trail
+- Frontend: https://github.com/CASIXx1/front-skill-trail
+
+BackendのECS service/task definitionはecspresso側で管理する。Terraform側ではECS cluster、IAM role、network、security group、ALB、ECR、CloudWatch LogsなどのAWS基盤を管理する。
+
+API ServiceのFireLens構成では、TerraformがCloudWatch Logs log groupを作成し、`api_ecspresso_env` outputで`LOG_GROUP_NAME`と`AWS_REGION`をecspressoへ渡す。ecspresso側ではAPIコンテナのlog driverを`awsfirelens`にし、FireLens sidecarの出力先としてこのlog groupを使う。
