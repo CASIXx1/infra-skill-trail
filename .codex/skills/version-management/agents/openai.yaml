@@ -1,0 +1,4 @@
+interface:
+  display_name: "Version Management"
+  short_description: "Verify and update stable tool versions"
+  default_prompt: "Use $version-management to verify the latest stable version of a dependency and update project constraints safely."

@@ -58,6 +58,56 @@ output "ecs_task_security_group_id" {
   value       = module.security_groups.ecs_task_security_group_id
 }
 
+output "alb_security_group_id" {
+  description = "Security group ID attached to the public ALB."
+  value       = module.security_groups.alb_security_group_id
+}
+
+output "alb_dns_name" {
+  description = "Public ALB DNS name."
+  value       = module.alb.alb_dns_name
+}
+
+output "alb_zone_id" {
+  description = "Public ALB canonical hosted zone ID."
+  value       = module.alb.alb_zone_id
+}
+
+output "api_target_group_arn" {
+  description = "Target group ARN for the API ECS service managed by ecspresso."
+  value       = module.alb.api_target_group_arn
+}
+
+output "api_domain_name" {
+  description = "Public API domain name."
+  value       = var.api_domain_name
+}
+
+output "api_acm_certificate_arn" {
+  description = "ACM certificate ARN for the public API domain."
+  value       = module.acm.certificate_arn
+}
+
+output "route53_hosted_zone_id" {
+  description = "Route 53 hosted zone ID."
+  value       = module.acm.hosted_zone_id
+}
+
+output "route53_hosted_zone_name_servers" {
+  description = "Name servers for the Route 53 hosted zone used by this project."
+  value       = module.dns.hosted_zone_name_servers
+}
+
+output "apex_domain_name" {
+  description = "Apex domain name for the existing CloudFront distribution."
+  value       = module.dns.apex_domain_name
+}
+
+output "cloudfront_domain_name" {
+  description = "Existing CloudFront distribution domain name for the apex domain."
+  value       = module.dns.cloudfront_domain_name
+}
+
 output "ecs_private_subnet_ids" {
   description = "Private subnet IDs for ECS tasks."
   value       = module.network.private_subnet_ids
@@ -85,6 +135,7 @@ output "api_ecspresso_env" {
     SUBNET_IDS              = join(",", module.network.private_subnet_ids)
     SECURITY_GROUP_IDS      = module.security_groups.ecs_task_security_group_id
     ASSIGN_PUBLIC_IP        = "false"
+    TARGET_GROUP_ARN        = module.alb.api_target_group_arn
   }
 }
 
