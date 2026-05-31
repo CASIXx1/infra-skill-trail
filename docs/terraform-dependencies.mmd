@@ -12,6 +12,17 @@ flowchart TB
     task_role["Task role"]
   end
 
+  subgraph alb["ALB"]
+    public_alb["Public ALB"]
+    api_tg["API Target Group"]
+  end
+
+  subgraph dns["DNS / Certificate"]
+    route53["Route 53"]
+    acm["ACM Certificate"]
+    cloudfront["Existing CloudFront"]
+  end
+
   subgraph endpoints["VPC Endpoints"]
     ecr_api["ECR API"]
     ecr_dkr["ECR DKR"]
@@ -20,6 +31,7 @@ flowchart TB
   end
 
   subgraph security["Security Groups"]
+    alb_sg["ALB SG"]
     vpce_sg["VPC Endpoint SG"]
     ecs_task_sg["ECS Task SG"]
   end
@@ -40,10 +52,19 @@ flowchart TB
 
   root --> ecr
   root --> ecs
+  root --> alb
+  root --> dns
   root --> endpoints
   root --> security
   root --> vpc
+  route53 --> cloudfront
+  route53 --> acm
+  alb --> api_tg
   security --> endpoints
+  alb_sg --> public_alb
+  alb_sg --> ecs_task_sg
+  public_alb --> public
+  api_tg --> ecs_task_sg
   endpoints --> private
   s3_gateway --> private_rt
   public --> public_rt

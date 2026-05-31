@@ -31,6 +31,31 @@ module "security_groups" {
   vpc_cidr_block = module.network.vpc_cidr_block
 }
 
+module "alb" {
+  source = "../../modules/alb"
+
+  name              = local.name
+  vpc_id            = module.network.vpc_id
+  public_subnet_ids = module.network.public_subnet_ids
+  security_group_id = module.security_groups.alb_security_group_id
+}
+
+module "acm" {
+  source = "../../modules/acm"
+
+  domain_name      = var.api_domain_name
+  hosted_zone_name = var.hosted_zone_name
+}
+
+module "dns" {
+  source = "../../modules/dns"
+
+  hosted_zone_name          = var.hosted_zone_name
+  apex_domain_name          = var.apex_domain_name
+  cloudfront_domain_name    = var.cloudfront_domain_name
+  cloudfront_hosted_zone_id = var.cloudfront_hosted_zone_id
+}
+
 module "vpc_endpoints" {
   source = "../../modules/vpc-endpoints"
 
