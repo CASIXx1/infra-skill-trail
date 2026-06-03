@@ -29,7 +29,7 @@ terraform init -backend-config=backend.hcl
 
 `backend.hcl` はローカル設定としてGit管理しない。実際に使うS3 bucketは事前に作成しておく。
 
-`environments/shared` はECR repositoryなど、検証環境をdestroyしても残す共有リソースを管理する。`environments/dev` はECR repositoryを作成せず、既存ECRをdata sourceで参照する。
+`environments/shared` はECR repositoryなど、検証環境をdestroyしても残す共有リソースを管理する。`environments/dev` はECR repositoryを作成せず、既存ECRを`data "aws_ecr_repository"`で参照するため、devのapply/destroy前にsharedをapplyしてECR repositoryを作成しておく。
 
 ## Application repositories
 
