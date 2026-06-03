@@ -46,3 +46,13 @@ variable "cloudfront_hosted_zone_id" {
   description = "CloudFront canonical hosted zone ID."
   type        = string
 }
+
+variable "terraform_state_bucket" {
+  description = "S3 bucket containing the dev Terraform state read by backend deploy workflows."
+  type        = string
+}
+
+variable "terraform_state_key" {
+  description = "S3 object key for the dev Terraform state read by backend deploy workflows."
+  type        = string
+}
