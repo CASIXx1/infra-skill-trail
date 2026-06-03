@@ -33,9 +33,8 @@ module "ecs_iam" {
 module "security_groups" {
   source = "../../modules/security-groups"
 
-  name           = local.name
-  vpc_id         = module.network.vpc_id
-  vpc_cidr_block = module.network.vpc_cidr_block
+  name   = local.name
+  vpc_id = module.network.vpc_id
 }
 
 module "alb" {
@@ -61,14 +60,4 @@ module "dns" {
   apex_domain_name          = var.apex_domain_name
   cloudfront_domain_name    = var.cloudfront_domain_name
   cloudfront_hosted_zone_id = var.cloudfront_hosted_zone_id
-}
-
-module "vpc_endpoints" {
-  source = "../../modules/vpc-endpoints"
-
-  name                                 = local.name
-  vpc_id                               = module.network.vpc_id
-  private_subnet_ids                   = module.network.private_subnet_ids
-  private_route_table_id               = module.network.private_route_table_id
-  interface_endpoint_security_group_id = module.security_groups.vpc_endpoint_security_group_id
 }

@@ -13,6 +13,16 @@ output "internet_gateway_id" {
   value       = aws_internet_gateway.this.id
 }
 
+output "nat_gateway_id" {
+  description = "NAT Gateway ID."
+  value       = aws_nat_gateway.this.id
+}
+
+output "nat_gateway_availability_mode" {
+  description = "NAT Gateway availability mode."
+  value       = aws_nat_gateway.this.availability_mode
+}
+
 output "public_1a_subnet_id" {
   description = "Public subnet ID in ap-northeast-1a."
   value       = aws_subnet.public_1a.id

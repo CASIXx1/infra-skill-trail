@@ -23,21 +23,14 @@ flowchart TB
     cloudfront["Existing CloudFront"]
   end
 
-  subgraph endpoints["VPC Endpoints"]
-    ecr_api["ECR API"]
-    ecr_dkr["ECR DKR"]
-    logs_endpoint["CloudWatch Logs"]
-    s3_gateway["S3 Gateway"]
-  end
-
   subgraph security["Security Groups"]
     alb_sg["ALB SG"]
-    vpce_sg["VPC Endpoint SG"]
     ecs_task_sg["ECS Task SG"]
   end
 
   subgraph vpc["VPC 10.20.0.0/16"]
     igw["Internet Gateway"]
+    nat["Regional NAT Gateway"]
 
     public["Public subnets\n10.20.0.0/24\n10.20.1.0/24"]
     private["Private subnets\n10.20.10.0/24\n10.20.11.0/24"]
@@ -45,7 +38,7 @@ flowchart TB
     cache["Cache subnets\n10.20.30.0/24\n10.20.31.0/24"]
 
     public_rt["Public route table\n0.0.0.0/0 -> IGW"]
-    private_rt["Private route table\nlocal only"]
+    private_rt["Private route table\n0.0.0.0/0 -> NAT Gateway"]
     database_rt["Database route table\nlocal only"]
     cache_rt["Cache route table\nlocal only"]
   end
@@ -54,21 +47,19 @@ flowchart TB
   root --> ecs
   root --> alb
   root --> dns
-  root --> endpoints
   root --> security
   root --> vpc
   route53 --> cloudfront
   route53 --> acm
   alb --> api_tg
-  security --> endpoints
   alb_sg --> public_alb
   alb_sg --> ecs_task_sg
   public_alb --> public
   api_tg --> ecs_task_sg
-  endpoints --> private
-  s3_gateway --> private_rt
   public --> public_rt
+  public --> nat
   public_rt --> igw
   private --> private_rt
+  private_rt --> nat
   database --> database_rt
   cache --> cache_rt

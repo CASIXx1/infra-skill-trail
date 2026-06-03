@@ -7,8 +7,3 @@ variable "vpc_id" {
   description = "VPC ID."
   type        = string
 }
-
-variable "vpc_cidr_block" {
-  description = "VPC CIDR block allowed to access VPC endpoints."
-  type        = string
-}
