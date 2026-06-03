@@ -1,3 +1,5 @@
+github_branch = "main"
+
 api_domain_name           = "api.example.com"
 hosted_zone_name          = "example.com"
 apex_domain_name          = "example.com"

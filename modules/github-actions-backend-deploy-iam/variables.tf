@@ -9,7 +9,7 @@ variable "github_repository" {
 }
 
 variable "github_branch" {
-  description = "GitHub branch allowed to assume the role."
+  description = "GitHub branch pattern allowed to assume the role."
   type        = string
 }
 

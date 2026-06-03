@@ -35,7 +35,7 @@ module "github_actions_backend_deploy_iam" {
 
   role_name                   = "github-actions-backend-skill-trail"
   github_repository           = "CASIXx1/backend-skill-trail"
-  github_branch               = "main"
+  github_branch               = var.github_branch
   ecr_repository_arns         = values(module.ecr.repository_arns)
   ecs_task_role_arn           = module.ecs_iam.task_role_arn
   ecs_task_execution_role_arn = module.ecs_iam.task_execution_role_arn

@@ -22,6 +22,12 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "github_branch" {
+  description = "GitHub branch pattern allowed to assume the backend deploy role. Use \"main\" for production-like restriction or \"*\" for temporary validation."
+  type        = string
+  default     = "main"
+}
+
 variable "api_domain_name" {
   description = "Public API domain name."
   type        = string
