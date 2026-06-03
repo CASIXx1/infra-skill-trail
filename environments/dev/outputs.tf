@@ -48,9 +48,19 @@ output "ecs_task_role_name" {
   value       = module.ecs_iam.task_role_name
 }
 
-output "vpc_endpoint_security_group_id" {
-  description = "Security group ID attached to interface VPC endpoints."
-  value       = module.security_groups.vpc_endpoint_security_group_id
+output "nat_gateway_id" {
+  description = "NAT Gateway ID."
+  value       = module.network.nat_gateway_id
+}
+
+output "nat_gateway_availability_mode" {
+  description = "NAT Gateway availability mode."
+  value       = module.network.nat_gateway_availability_mode
+}
+
+output "api_log_group_name" {
+  description = "CloudWatch Logs log group name for the API ECS service."
+  value       = module.ecs_logs.api_log_group_name
 }
 
 output "ecs_task_security_group_id" {
@@ -136,6 +146,8 @@ output "api_ecspresso_env" {
     SECURITY_GROUP_IDS      = module.security_groups.ecs_task_security_group_id
     ASSIGN_PUBLIC_IP        = "false"
     TARGET_GROUP_ARN        = module.alb.api_target_group_arn
+    LOG_GROUP_NAME          = module.ecs_logs.api_log_group_name
+    AWS_REGION              = var.aws_region
   }
 }
 
