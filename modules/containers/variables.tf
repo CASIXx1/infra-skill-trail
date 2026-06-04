@@ -1,5 +1,5 @@
 variable "name" {
-  description = "Name prefix for ECS log groups."
+  description = "Name prefix for container runtime resources."
   type        = string
 }
 

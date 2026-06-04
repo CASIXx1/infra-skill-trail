@@ -1,34 +1,21 @@
 flowchart TB
   root["environments/dev"]
+  shared["environments/shared"]
 
-  subgraph ecr["ECR"]
-    api_repo["API repository"]
-    worker_repo["Worker repository"]
+  subgraph registry["container-registry"]
+    api_repo["API ECR repository"]
+    worker_repo["Worker ECR repository"]
   end
 
-  subgraph ecs["ECS"]
+  subgraph containers["containers"]
+    ecr_data["Existing ECR repository data"]
     cluster["Cluster"]
     task_execution_role["Task execution role"]
     task_role["Task role"]
   end
 
-  subgraph alb["ALB"]
-    public_alb["Public ALB"]
-    api_tg["API Target Group"]
-  end
-
-  subgraph dns["DNS / Certificate"]
-    route53["Route 53"]
-    acm["ACM Certificate"]
-    cloudfront["Existing CloudFront"]
-  end
-
-  subgraph security["Security Groups"]
-    alb_sg["ALB SG"]
-    ecs_task_sg["ECS Task SG"]
-  end
-
-  subgraph vpc["VPC 10.20.0.0/16"]
+  subgraph network["network"]
+    vpc["VPC 10.20.0.0/16"]
     igw["Internet Gateway"]
     nat["Regional NAT Gateway"]
 
@@ -41,17 +28,24 @@ flowchart TB
     private_rt["Private route table\n0.0.0.0/0 -> NAT Gateway"]
     database_rt["Database route table\nlocal only"]
     cache_rt["Cache route table\nlocal only"]
+
+    public_alb["Public ALB"]
+    api_tg["API Target Group"]
+    route53["Route 53"]
+    acm["ACM Certificate"]
+    cloudfront["Existing CloudFront"]
+    alb_sg["ALB SG"]
+    ecs_task_sg["ECS Task SG"]
   end
 
-  root --> ecr
-  root --> ecs
-  root --> alb
-  root --> dns
-  root --> security
-  root --> vpc
+  shared --> registry
+  root --> containers
+  root --> network
+  containers --> ecr_data
+  ecr_data --> api_repo
+  ecr_data --> worker_repo
   route53 --> cloudfront
   route53 --> acm
-  alb --> api_tg
   alb_sg --> public_alb
   alb_sg --> ecs_task_sg
   public_alb --> public

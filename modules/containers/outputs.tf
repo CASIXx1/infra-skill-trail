@@ -1,0 +1,59 @@
+output "cluster_arn" {
+  description = "ECS cluster ARN."
+  value       = aws_ecs_cluster.this.arn
+}
+
+output "cluster_name" {
+  description = "ECS cluster name."
+  value       = aws_ecs_cluster.this.name
+}
+
+output "api_log_group_name" {
+  description = "CloudWatch Logs log group name for the API ECS service."
+  value       = aws_cloudwatch_log_group.api.name
+}
+
+output "api_log_group_arn" {
+  description = "CloudWatch Logs log group ARN for the API ECS service."
+  value       = aws_cloudwatch_log_group.api.arn
+}
+
+output "task_execution_role_arn" {
+  description = "ECS task execution role ARN."
+  value       = aws_iam_role.task_execution.arn
+}
+
+output "task_execution_role_name" {
+  description = "ECS task execution role name."
+  value       = aws_iam_role.task_execution.name
+}
+
+output "task_role_arn" {
+  description = "ECS task role ARN."
+  value       = aws_iam_role.task.arn
+}
+
+output "task_role_name" {
+  description = "ECS task role name."
+  value       = aws_iam_role.task.name
+}
+
+output "repository_urls" {
+  description = "ECR repository URLs keyed by workload name."
+  value       = { for key, repository in data.aws_ecr_repository.this : key => repository.repository_url }
+}
+
+output "repository_arns" {
+  description = "ECR repository ARNs keyed by workload name."
+  value       = { for key, repository in data.aws_ecr_repository.this : key => repository.arn }
+}
+
+output "api_repository_url" {
+  description = "API ECR repository URL."
+  value       = data.aws_ecr_repository.this["api"].repository_url
+}
+
+output "worker_repository_url" {
+  description = "Worker ECR repository URL."
+  value       = data.aws_ecr_repository.this["worker"].repository_url
+}

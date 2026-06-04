@@ -2,8 +2,11 @@ resource "aws_lb" "this" {
   name               = var.name
   load_balancer_type = "application"
   internal           = false
-  security_groups    = [var.security_group_id]
-  subnets            = var.public_subnet_ids
+  security_groups    = [aws_security_group.alb.id]
+  subnets = [
+    aws_subnet.public_1a.id,
+    aws_subnet.public_1c.id,
+  ]
 
   tags = {
     Name = var.name
@@ -15,7 +18,7 @@ resource "aws_lb_target_group" "api" {
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.this.id
 
   health_check {
     enabled             = true
