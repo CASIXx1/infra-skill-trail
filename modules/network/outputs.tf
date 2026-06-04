@@ -114,3 +114,63 @@ output "cache_route_table_id" {
   description = "Cache route table ID."
   value       = aws_route_table.cache.id
 }
+
+output "ecs_task_security_group_id" {
+  description = "Security group ID attached to ECS tasks."
+  value       = aws_security_group.ecs_tasks.id
+}
+
+output "alb_arn" {
+  description = "ALB ARN."
+  value       = aws_lb.this.arn
+}
+
+output "alb_dns_name" {
+  description = "ALB DNS name."
+  value       = aws_lb.this.dns_name
+}
+
+output "alb_zone_id" {
+  description = "ALB canonical hosted zone ID."
+  value       = aws_lb.this.zone_id
+}
+
+output "alb_security_group_id" {
+  description = "Security group ID attached to the public ALB."
+  value       = aws_security_group.alb.id
+}
+
+output "api_target_group_arn" {
+  description = "Target group ARN for the API ECS service."
+  value       = aws_lb_target_group.api.arn
+}
+
+output "http_listener_arn" {
+  description = "HTTP listener ARN."
+  value       = aws_lb_listener.http.arn
+}
+
+output "api_certificate_arn" {
+  description = "ACM certificate ARN for the public API domain."
+  value       = aws_acm_certificate.api.arn
+}
+
+output "hosted_zone_id" {
+  description = "Route 53 hosted zone ID."
+  value       = data.aws_route53_zone.this.zone_id
+}
+
+output "hosted_zone_name_servers" {
+  description = "Name servers for the Route 53 hosted zone."
+  value       = data.aws_route53_zone.this.name_servers
+}
+
+output "apex_domain_name" {
+  description = "Apex domain name."
+  value       = var.apex_domain_name
+}
+
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name for the apex domain."
+  value       = var.cloudfront_domain_name
+}

@@ -1,5 +1,5 @@
 # import {
-#   to = module.ecr.aws_ecr_repository.this["api"]
+#   to = module.container_registry.aws_ecr_repository.this["api"]
 #   id = "infra-skill-trail-dev-api"
 # }
 
@@ -7,6 +7,6 @@
 # shared apply. If it does not exist, Terraform will create it.
 #
 # import {
-#   to = module.ecr.aws_ecr_repository.this["worker"]
+#   to = module.container_registry.aws_ecr_repository.this["worker"]
 #   id = "infra-skill-trail-dev-worker"
 # }

@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "ecs_tasks_assume_role" {
 }
 
 locals {
-  api_log_group_arn = trimsuffix(var.api_log_group_arn, ":*")
+  api_log_group_arn = trimsuffix(aws_cloudwatch_log_group.api.arn, ":*")
 }
 
 resource "aws_iam_role" "task_execution" {
