@@ -37,6 +37,7 @@ module "github_actions_backend_deploy_iam" {
   github_repository           = "CASIXx1/backend-skill-trail"
   github_environment          = var.github_environment
   ecr_repository_arns         = values(module.ecr.repository_arns)
+  api_ecr_repository_arn      = module.ecr.repository_arns["api"]
   ecs_task_role_arn           = module.ecs_iam.task_role_arn
   ecs_task_execution_role_arn = module.ecs_iam.task_execution_role_arn
   terraform_state_bucket      = var.terraform_state_bucket

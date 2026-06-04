@@ -60,6 +60,19 @@ data "aws_iam_policy_document" "backend_deploy" {
   }
 
   statement {
+    sid = "EcrManifestRead"
+
+    actions = [
+      "ecr:BatchGetImage",
+      "ecr:DescribeImages",
+    ]
+
+    resources = [
+      var.api_ecr_repository_arn,
+    ]
+  }
+
+  statement {
     sid = "EcspressoDeploy"
 
     actions = [
