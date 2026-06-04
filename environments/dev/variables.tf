@@ -22,6 +22,12 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "github_environment" {
+  description = "GitHub Environment allowed to assume the backend deploy role."
+  type        = string
+  default     = "dev"
+}
+
 variable "api_domain_name" {
   description = "Public API domain name."
   type        = string
@@ -44,5 +50,15 @@ variable "cloudfront_domain_name" {
 
 variable "cloudfront_hosted_zone_id" {
   description = "CloudFront canonical hosted zone ID."
+  type        = string
+}
+
+variable "terraform_state_bucket" {
+  description = "S3 bucket containing the dev Terraform state read by backend deploy workflows."
+  type        = string
+}
+
+variable "terraform_state_key" {
+  description = "S3 object key for the dev Terraform state read by backend deploy workflows."
   type        = string
 }

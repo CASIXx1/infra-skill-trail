@@ -18,6 +18,11 @@ output "worker_ecr_repository_url" {
   value       = module.ecr.worker_repository_url
 }
 
+output "github_actions_backend_role_arn" {
+  description = "IAM role ARN assumed by backend-skill-trail GitHub Actions."
+  value       = module.github_actions_backend_deploy_iam.role_arn
+}
+
 output "ecs_cluster_name" {
   description = "ECS cluster name."
   value       = module.ecs_cluster.cluster_name

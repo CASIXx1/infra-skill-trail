@@ -1,5 +1,9 @@
+github_environment = "dev"
+
 api_domain_name           = "api.example.com"
 hosted_zone_name          = "example.com"
 apex_domain_name          = "example.com"
 cloudfront_domain_name    = "example.cloudfront.net"
 cloudfront_hosted_zone_id = ""
+terraform_state_bucket    = "example-terraform-state-bucket"
+terraform_state_key       = "infra-skill-trail/dev/terraform.tfstate"

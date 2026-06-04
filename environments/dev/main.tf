@@ -30,6 +30,20 @@ module "ecs_iam" {
   api_log_group_arn = module.ecs_logs.api_log_group_arn
 }
 
+module "github_actions_backend_deploy_iam" {
+  source = "../../modules/github-actions-backend-deploy-iam"
+
+  role_name                   = "github-actions-backend-skill-trail"
+  github_repository           = "CASIXx1/backend-skill-trail"
+  github_environment          = var.github_environment
+  ecr_repository_arns         = values(module.ecr.repository_arns)
+  api_ecr_repository_arn      = module.ecr.repository_arns["api"]
+  ecs_task_role_arn           = module.ecs_iam.task_role_arn
+  ecs_task_execution_role_arn = module.ecs_iam.task_execution_role_arn
+  terraform_state_bucket      = var.terraform_state_bucket
+  terraform_state_key         = var.terraform_state_key
+}
+
 module "security_groups" {
   source = "../../modules/security-groups"
 
