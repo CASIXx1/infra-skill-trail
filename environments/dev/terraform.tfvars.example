@@ -1,4 +1,4 @@
-github_branch = "main"
+github_environment = "dev"
 
 api_domain_name           = "api.example.com"
 hosted_zone_name          = "example.com"

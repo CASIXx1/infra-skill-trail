@@ -8,8 +8,8 @@ variable "github_repository" {
   type        = string
 }
 
-variable "github_branch" {
-  description = "GitHub branch pattern allowed to assume the role."
+variable "github_environment" {
+  description = "GitHub Environment allowed to assume the role."
   type        = string
 }
 
