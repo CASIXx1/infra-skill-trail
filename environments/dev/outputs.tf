@@ -73,6 +73,16 @@ output "ecs_task_security_group_id" {
   value       = module.network.ecs_task_security_group_id
 }
 
+output "database_subnet_group_name" {
+  description = "DB subnet group name for Aurora."
+  value       = module.database.subnet_group_name
+}
+
+output "database_security_group_id" {
+  description = "Security group ID attached to Aurora."
+  value       = module.database.security_group_id
+}
+
 output "alb_security_group_id" {
   description = "Security group ID attached to the public ALB."
   value       = module.network.alb_security_group_id

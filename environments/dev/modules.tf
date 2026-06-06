@@ -16,6 +16,15 @@ module "containers" {
   name = local.name
 }
 
+module "database" {
+  source = "../../modules/database"
+
+  name                       = local.name
+  vpc_id                     = module.network.vpc_id
+  database_subnet_ids        = module.network.database_subnet_ids
+  ecs_task_security_group_id = module.network.ecs_task_security_group_id
+}
+
 module "backend_deployment" {
   source = "../../modules/backend-deployment"
 
