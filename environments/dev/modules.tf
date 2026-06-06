@@ -13,7 +13,8 @@ module "network" {
 module "containers" {
   source = "../../modules/containers"
 
-  name = local.name
+  name                            = local.name
+  database_master_user_secret_arn = module.database.master_user_secret_arn
 }
 
 module "database" {
