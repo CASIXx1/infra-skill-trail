@@ -53,7 +53,7 @@ resource "aws_iam_role_policy" "task_cloudwatch_logs" {
   policy = data.aws_iam_policy_document.task_cloudwatch_logs.json
 }
 
-data "aws_iam_policy_document" "task_secrets_manager" {
+data "aws_iam_policy_document" "task_execution_secrets_manager" {
   statement {
     actions = [
       "secretsmanager:GetSecretValue",
@@ -65,8 +65,8 @@ data "aws_iam_policy_document" "task_secrets_manager" {
   }
 }
 
-resource "aws_iam_role_policy" "task_secrets_manager" {
-  name   = "${var.name}-ecs-task-secrets-manager"
-  role   = aws_iam_role.task.id
-  policy = data.aws_iam_policy_document.task_secrets_manager.json
+resource "aws_iam_role_policy" "task_execution_secrets_manager" {
+  name   = "${var.name}-ecs-task-execution-secrets-manager"
+  role   = aws_iam_role.task_execution.id
+  policy = data.aws_iam_policy_document.task_execution_secrets_manager.json
 }
