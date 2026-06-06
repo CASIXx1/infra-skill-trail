@@ -13,7 +13,17 @@ module "network" {
 module "containers" {
   source = "../../modules/containers"
 
-  name = local.name
+  name                            = local.name
+  database_master_user_secret_arn = module.database.master_user_secret_arn
+}
+
+module "database" {
+  source = "../../modules/database"
+
+  name                       = local.name
+  vpc_id                     = module.network.vpc_id
+  database_subnet_ids        = module.network.database_subnet_ids
+  ecs_task_security_group_id = module.network.ecs_task_security_group_id
 }
 
 module "backend_deployment" {

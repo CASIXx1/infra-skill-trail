@@ -8,3 +8,8 @@ variable "retention_in_days" {
   type        = number
   default     = 30
 }
+
+variable "database_master_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the RDS-managed database master user credentials."
+  type        = string
+}

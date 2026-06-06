@@ -73,6 +73,51 @@ output "ecs_task_security_group_id" {
   value       = module.network.ecs_task_security_group_id
 }
 
+output "database_subnet_group_name" {
+  description = "DB subnet group name for Aurora."
+  value       = module.database.subnet_group_name
+}
+
+output "database_security_group_id" {
+  description = "Security group ID attached to Aurora."
+  value       = module.database.security_group_id
+}
+
+output "database_cluster_arn" {
+  description = "Aurora cluster ARN."
+  value       = module.database.cluster_arn
+}
+
+output "database_cluster_identifier" {
+  description = "Aurora cluster identifier."
+  value       = module.database.cluster_identifier
+}
+
+output "database_writer_endpoint" {
+  description = "Aurora writer endpoint."
+  value       = module.database.writer_endpoint
+}
+
+output "database_reader_endpoint" {
+  description = "Aurora reader endpoint."
+  value       = module.database.reader_endpoint
+}
+
+output "database_port" {
+  description = "Aurora PostgreSQL port."
+  value       = module.database.port
+}
+
+output "database_name" {
+  description = "Initial database name."
+  value       = module.database.database_name
+}
+
+output "database_master_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the RDS-managed master user credentials."
+  value       = module.database.master_user_secret_arn
+}
+
 output "alb_security_group_id" {
   description = "Security group ID attached to the public ALB."
   value       = module.network.alb_security_group_id
