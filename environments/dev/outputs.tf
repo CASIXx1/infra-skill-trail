@@ -193,6 +193,27 @@ output "worker_ecs_service_name" {
   value       = "${local.name}-worker"
 }
 
+output "migration_ecspresso_env" {
+  description = "Environment values for migration tasks managed by ecspresso."
+  value = {
+    ECS_CLUSTER_NAME             = module.containers.cluster_name
+    CONTAINER_NAME               = "migration"
+    TASK_EXECUTION_ROLE_ARN      = module.containers.task_execution_role_arn
+    TASK_ROLE_ARN                = module.containers.task_role_arn
+    SUBNET_IDS                   = join(",", module.network.private_subnet_ids)
+    SECURITY_GROUP_IDS           = module.network.ecs_task_security_group_id
+    ASSIGN_PUBLIC_IP             = "false"
+    MIGRATION_ECR_REPOSITORY_URL = module.containers.migration_repository_url
+    LOG_GROUP_NAME               = module.containers.migration_log_group_name
+    AWS_REGION                   = var.aws_region
+    DB_HOST                      = module.database.writer_endpoint
+    DB_READER_HOST               = module.database.reader_endpoint
+    DB_PORT                      = tostring(module.database.port)
+    DB_NAME                      = module.database.database_name
+    DB_MASTER_USER_SECRET_ARN    = module.database.master_user_secret_arn
+  }
+}
+
 output "api_ecspresso_env" {
   description = "Environment values for the API service managed by ecspresso. TARGET_GROUP_ARN will be added after ALB target group is created."
   value = {
