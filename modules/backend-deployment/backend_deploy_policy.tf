@@ -51,6 +51,18 @@ data "aws_iam_policy_document" "backend_deploy" {
   }
 
   statement {
+    sid = "EcspressoRunTask"
+
+    actions = [
+      "ecs:RunTask",
+      "ecs:DescribeTasks",
+      "ecs:StopTask",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
     sid = "AlbRead"
 
     actions = [
