@@ -18,6 +18,11 @@ output "worker_ecr_repository_url" {
   value       = module.containers.worker_repository_url
 }
 
+output "migration_ecr_repository_url" {
+  description = "Migration ECR repository URL."
+  value       = module.containers.migration_repository_url
+}
+
 output "github_actions_backend_role_arn" {
   description = "IAM role ARN assumed by backend-skill-trail GitHub Actions."
   value       = module.backend_deployment.role_arn

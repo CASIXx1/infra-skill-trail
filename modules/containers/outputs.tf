@@ -57,3 +57,8 @@ output "worker_repository_url" {
   description = "Worker ECR repository URL."
   value       = data.aws_ecr_repository.this["worker"].repository_url
 }
+
+output "migration_repository_url" {
+  description = "Migration ECR repository URL."
+  value       = data.aws_ecr_repository.this["migration"].repository_url
+}
