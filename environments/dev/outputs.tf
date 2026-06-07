@@ -73,6 +73,11 @@ output "api_log_group_name" {
   value       = module.containers.api_log_group_name
 }
 
+output "migration_log_group_name" {
+  description = "CloudWatch Logs log group name for migration tasks."
+  value       = module.containers.migration_log_group_name
+}
+
 output "ecs_task_security_group_id" {
   description = "Security group ID attached to ECS tasks."
   value       = module.network.ecs_task_security_group_id
