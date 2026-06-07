@@ -31,9 +31,7 @@ data "aws_iam_policy_document" "backend_deploy" {
       "ecr:DescribeImages",
     ]
 
-    resources = [
-      var.api_ecr_repository_arn,
-    ]
+    resources = var.ecr_repository_arns
   }
 
   statement {
@@ -45,6 +43,18 @@ data "aws_iam_policy_document" "backend_deploy" {
       "ecs:RegisterTaskDefinition",
       "ecs:UpdateService",
       "ecs:CreateService",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "EcspressoRunTask"
+
+    actions = [
+      "ecs:RunTask",
+      "ecs:DescribeTasks",
+      "ecs:StopTask",
     ]
 
     resources = ["*"]

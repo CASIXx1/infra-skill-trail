@@ -18,11 +18,6 @@ variable "ecr_repository_arns" {
   type        = list(string)
 }
 
-variable "api_ecr_repository_arn" {
-  description = "API ECR repository ARN allowed for image manifest reads."
-  type        = string
-}
-
 variable "ecs_task_role_arn" {
   description = "ECS task role ARN allowed for iam:PassRole."
   type        = string

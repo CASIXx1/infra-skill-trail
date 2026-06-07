@@ -18,6 +18,16 @@ output "api_log_group_arn" {
   value       = aws_cloudwatch_log_group.api.arn
 }
 
+output "migration_log_group_name" {
+  description = "CloudWatch Logs log group name for migration tasks."
+  value       = aws_cloudwatch_log_group.migration.name
+}
+
+output "migration_log_group_arn" {
+  description = "CloudWatch Logs log group ARN for migration tasks."
+  value       = aws_cloudwatch_log_group.migration.arn
+}
+
 output "task_execution_role_arn" {
   description = "ECS task execution role ARN."
   value       = aws_iam_role.task_execution.arn
@@ -56,4 +66,9 @@ output "api_repository_url" {
 output "worker_repository_url" {
   description = "Worker ECR repository URL."
   value       = data.aws_ecr_repository.this["worker"].repository_url
+}
+
+output "migration_repository_url" {
+  description = "Migration ECR repository URL."
+  value       = data.aws_ecr_repository.this["migration"].repository_url
 }

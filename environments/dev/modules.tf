@@ -33,7 +33,6 @@ module "backend_deployment" {
   github_repository           = "CASIXx1/backend-skill-trail"
   github_environment          = var.github_environment
   ecr_repository_arns         = values(module.containers.repository_arns)
-  api_ecr_repository_arn      = module.containers.repository_arns["api"]
   ecs_task_role_arn           = module.containers.task_role_arn
   ecs_task_execution_role_arn = module.containers.task_execution_role_arn
   terraform_state_bucket      = var.terraform_state_bucket
