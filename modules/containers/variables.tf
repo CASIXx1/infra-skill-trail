@@ -13,3 +13,8 @@ variable "database_master_user_secret_arn" {
   description = "Secrets Manager secret ARN for the RDS-managed database master user credentials."
   type        = string
 }
+
+variable "external_service_secret_name" {
+  description = "Name of the existing Secrets Manager secret containing external service keys."
+  type        = string
+}

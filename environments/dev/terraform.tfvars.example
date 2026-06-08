@@ -1,5 +1,7 @@
 github_environment = "dev"
 
+external_service_secret_name = "dev/external_service_keys"
+
 api_domain_name           = "api.example.com"
 hosted_zone_name          = "example.com"
 apex_domain_name          = "example.com"

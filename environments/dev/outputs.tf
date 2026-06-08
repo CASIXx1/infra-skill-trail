@@ -78,6 +78,26 @@ output "migration_log_group_name" {
   value       = module.containers.migration_log_group_name
 }
 
+output "external_service_secret_arn" {
+  description = "Secrets Manager secret ARN for external service keys."
+  value       = module.containers.external_service_secret_arn
+}
+
+output "new_relic_license_key_secret_arn" {
+  description = "Secrets Manager secret ARN for the New Relic license key."
+  value       = module.containers.new_relic_license_key_secret_arn
+}
+
+output "new_relic_firelens_image" {
+  description = "New Relic FireLens Fluent Bit image."
+  value       = module.containers.new_relic_firelens_image
+}
+
+output "new_relic_log_endpoint" {
+  description = "New Relic Logs endpoint for the JP region."
+  value       = "https://log-api.jp.nr-data.net/log/v1"
+}
+
 output "ecs_task_security_group_id" {
   description = "Security group ID attached to ECS tasks."
   value       = module.network.ecs_task_security_group_id

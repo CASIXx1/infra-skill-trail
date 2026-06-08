@@ -28,6 +28,11 @@ variable "github_environment" {
   default     = "dev"
 }
 
+variable "external_service_secret_name" {
+  description = "Name of the existing Secrets Manager secret containing external service keys."
+  type        = string
+}
+
 variable "api_domain_name" {
   description = "Public API domain name."
   type        = string

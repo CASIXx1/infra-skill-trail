@@ -61,6 +61,7 @@ data "aws_iam_policy_document" "task_execution_secrets_manager" {
 
     resources = [
       var.database_master_user_secret_arn,
+      data.aws_secretsmanager_secret.external_service.arn,
     ]
   }
 }

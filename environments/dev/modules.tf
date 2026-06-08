@@ -15,6 +15,7 @@ module "containers" {
 
   name                            = local.name
   database_master_user_secret_arn = module.database.master_user_secret_arn
+  external_service_secret_name    = var.external_service_secret_name
 }
 
 module "database" {

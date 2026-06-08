@@ -28,6 +28,21 @@ output "migration_log_group_arn" {
   value       = aws_cloudwatch_log_group.migration.arn
 }
 
+output "external_service_secret_arn" {
+  description = "Secrets Manager secret ARN for external service keys."
+  value       = data.aws_secretsmanager_secret.external_service.arn
+}
+
+output "new_relic_license_key_secret_arn" {
+  description = "Secrets Manager secret ARN for the New Relic license key."
+  value       = data.aws_secretsmanager_secret.external_service.arn
+}
+
+output "new_relic_firelens_image" {
+  description = "New Relic FireLens Fluent Bit image."
+  value       = local.new_relic_firelens_image
+}
+
 output "task_execution_role_arn" {
   description = "ECS task execution role ARN."
   value       = aws_iam_role.task_execution.arn
