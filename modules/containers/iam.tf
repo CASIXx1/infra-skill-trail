@@ -61,6 +61,7 @@ data "aws_iam_policy_document" "task_execution_secrets_manager" {
 
     resources = [
       var.database_master_user_secret_arn,
+      data.aws_secretsmanager_secret.external_service.arn,
     ]
   }
 }
@@ -69,4 +70,24 @@ resource "aws_iam_role_policy" "task_execution_secrets_manager" {
   name   = "${var.name}-ecs-task-execution-secrets-manager"
   role   = aws_iam_role.task_execution.id
   policy = data.aws_iam_policy_document.task_execution_secrets_manager.json
+}
+
+data "aws_iam_policy_document" "task_execution_firelens_ecr_pull" {
+  statement {
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
+    ]
+
+    resources = [
+      var.ecr_repository_arns["firelens"],
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "task_execution_firelens_ecr_pull" {
+  name   = "${var.name}-ecs-task-execution-firelens-ecr-pull"
+  role   = aws_iam_role.task_execution.id
+  policy = data.aws_iam_policy_document.task_execution_firelens_ecr_pull.json
 }

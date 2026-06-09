@@ -10,11 +10,20 @@ module "network" {
   cloudfront_hosted_zone_id = var.cloudfront_hosted_zone_id
 }
 
+module "container_registry" {
+  source = "../../modules/container-registry"
+
+  name = local.name
+}
+
 module "containers" {
   source = "../../modules/containers"
 
   name                            = local.name
   database_master_user_secret_arn = module.database.master_user_secret_arn
+  external_service_secret_name    = var.external_service_secret_name
+  ecr_repository_urls             = module.container_registry.repository_urls
+  ecr_repository_arns             = module.container_registry.repository_arns
 }
 
 module "database" {
@@ -32,7 +41,7 @@ module "backend_deployment" {
   role_name                   = "github-actions-backend-skill-trail"
   github_repository           = "CASIXx1/backend-skill-trail"
   github_environment          = var.github_environment
-  ecr_repository_arns         = values(module.containers.repository_arns)
+  ecr_repository_arns         = values(module.container_registry.repository_arns)
   ecs_task_role_arn           = module.containers.task_role_arn
   ecs_task_execution_role_arn = module.containers.task_execution_role_arn
   terraform_state_bucket      = var.terraform_state_bucket

@@ -8,6 +8,11 @@ output "vpc_cidr_block" {
   value       = module.network.vpc_cidr_block
 }
 
+output "repository_urls" {
+  description = "ECR repository URLs keyed by workload name."
+  value       = module.container_registry.repository_urls
+}
+
 output "api_ecr_repository_url" {
   description = "API ECR repository URL."
   value       = module.containers.api_repository_url
@@ -21,6 +26,11 @@ output "worker_ecr_repository_url" {
 output "migration_ecr_repository_url" {
   description = "Migration ECR repository URL."
   value       = module.containers.migration_repository_url
+}
+
+output "firelens_ecr_repository_url" {
+  description = "FireLens ECR repository URL."
+  value       = module.containers.firelens_repository_url
 }
 
 output "github_actions_backend_role_arn" {
@@ -76,6 +86,26 @@ output "api_log_group_name" {
 output "migration_log_group_name" {
   description = "CloudWatch Logs log group name for migration tasks."
   value       = module.containers.migration_log_group_name
+}
+
+output "external_service_secret_arn" {
+  description = "Secrets Manager secret ARN for external service keys."
+  value       = module.containers.external_service_secret_arn
+}
+
+output "new_relic_license_key_secret_arn" {
+  description = "Secrets Manager secret ARN for the New Relic license key."
+  value       = module.containers.new_relic_license_key_secret_arn
+}
+
+output "new_relic_firelens_image" {
+  description = "New Relic FireLens Fluent Bit image."
+  value       = module.containers.new_relic_firelens_image
+}
+
+output "new_relic_log_endpoint" {
+  description = "New Relic Logs endpoint for the JP region."
+  value       = "https://log-api.jp.nr-data.net/log/v1"
 }
 
 output "ecs_task_security_group_id" {
@@ -193,6 +223,11 @@ output "worker_ecs_service_name" {
   value       = "${local.name}-worker"
 }
 
+output "migration_container_name" {
+  description = "Container name for migration tasks managed by ecspresso."
+  value       = "migration"
+}
+
 output "migration_ecspresso_env" {
   description = "Environment values for migration tasks managed by ecspresso."
   value = {
@@ -211,37 +246,5 @@ output "migration_ecspresso_env" {
     DB_PORT                      = tostring(module.database.port)
     DB_NAME                      = module.database.database_name
     DB_MASTER_USER_SECRET_ARN    = module.database.master_user_secret_arn
-  }
-}
-
-output "api_ecspresso_env" {
-  description = "Environment values for the API service managed by ecspresso. TARGET_GROUP_ARN will be added after ALB target group is created."
-  value = {
-    ECS_CLUSTER_NAME        = module.containers.cluster_name
-    ECS_SERVICE_NAME        = "${local.name}-api"
-    CONTAINER_NAME          = "app"
-    CONTAINER_PORT          = "8080"
-    TASK_EXECUTION_ROLE_ARN = module.containers.task_execution_role_arn
-    TASK_ROLE_ARN           = module.containers.task_role_arn
-    SUBNET_IDS              = join(",", module.network.private_subnet_ids)
-    SECURITY_GROUP_IDS      = module.network.ecs_task_security_group_id
-    ASSIGN_PUBLIC_IP        = "false"
-    TARGET_GROUP_ARN        = module.network.api_target_group_arn
-    LOG_GROUP_NAME          = module.containers.api_log_group_name
-    AWS_REGION              = var.aws_region
-  }
-}
-
-output "worker_ecspresso_env" {
-  description = "Environment values for the worker service managed by ecspresso."
-  value = {
-    ECS_CLUSTER_NAME        = module.containers.cluster_name
-    ECS_SERVICE_NAME        = "${local.name}-worker"
-    CONTAINER_NAME          = "app"
-    TASK_EXECUTION_ROLE_ARN = module.containers.task_execution_role_arn
-    TASK_ROLE_ARN           = module.containers.task_role_arn
-    SUBNET_IDS              = join(",", module.network.private_subnet_ids)
-    SECURITY_GROUP_IDS      = module.network.ecs_task_security_group_id
-    ASSIGN_PUBLIC_IP        = "false"
   }
 }
