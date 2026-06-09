@@ -65,25 +65,30 @@ output "task_role_name" {
 
 output "repository_urls" {
   description = "ECR repository URLs keyed by workload name."
-  value       = { for key, repository in data.aws_ecr_repository.this : key => repository.repository_url }
+  value       = var.ecr_repository_urls
 }
 
 output "repository_arns" {
   description = "ECR repository ARNs keyed by workload name."
-  value       = { for key, repository in data.aws_ecr_repository.this : key => repository.arn }
+  value       = var.ecr_repository_arns
 }
 
 output "api_repository_url" {
   description = "API ECR repository URL."
-  value       = data.aws_ecr_repository.this["api"].repository_url
+  value       = var.ecr_repository_urls["api"]
 }
 
 output "worker_repository_url" {
   description = "Worker ECR repository URL."
-  value       = data.aws_ecr_repository.this["worker"].repository_url
+  value       = var.ecr_repository_urls["worker"]
 }
 
 output "migration_repository_url" {
   description = "Migration ECR repository URL."
-  value       = data.aws_ecr_repository.this["migration"].repository_url
+  value       = var.ecr_repository_urls["migration"]
+}
+
+output "firelens_repository_url" {
+  description = "FireLens ECR repository URL."
+  value       = var.ecr_repository_urls["firelens"]
 }

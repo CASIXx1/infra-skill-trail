@@ -17,25 +17,49 @@ Terraformを `1.15.4` に更新してから実行する。
 tfstateはS3 backendでチーム共有する。
 
 ```bash
-cd environments/shared
-cp backend.example.hcl backend.hcl
-terraform init -backend-config=backend.hcl
-terraform apply
-
 cd environments/dev
 cp backend.example.hcl backend.hcl
 terraform init -backend-config=backend.hcl
+terraform apply
 ```
 
 `backend.hcl` はローカル設定としてGit管理しない。実際に使うS3 bucketは事前に作成しておく。
 
-`environments/shared` はECR repositoryなど、検証環境をdestroyしても残す共有リソースを管理する。ECR repositoryは`modules/container-registry`で作成する。`environments/dev` はECR repositoryを作成せず、`modules/containers`内で既存ECRを`data "aws_ecr_repository"`として参照するため、devのapply/destroy前にsharedをapplyしてECR repositoryを作成しておく。
+ECR repositoryは`environments/dev`内の`modules/container-registry`で作成する。ECR repository内にimageが残っていると`terraform destroy`が失敗するため、destroy前にcleanup scriptを実行する。
+
+```bash
+cd environments/dev
+./scripts/cleanup-destroy-blockers.sh
+./scripts/cleanup-destroy-blockers.sh --yes
+terraform destroy
+```
 
 ## Application repositories
 
 - Backend: https://github.com/CASIXx1/backend-skill-trail
 - Frontend: https://github.com/CASIXx1/front-skill-trail
 
-BackendのECS service/task definitionはecspresso側で管理する。Terraform側ではnetwork、security group、ALB、ECS cluster、IAM role、CloudWatch LogsなどのAWS基盤を管理する。ECR repositoryは`environments/shared`で管理し、`environments/dev`から参照する。
+BackendのECS service/task definitionはecspresso側で管理する。Terraform側ではnetwork、security group、ALB、ECS cluster、IAM role、CloudWatch Logs、ECR repositoryなどのAWS基盤を管理する。
 
-API ServiceのFireLens構成では、TerraformがCloudWatch Logs log groupを作成し、`api_ecspresso_env` outputで`LOG_GROUP_NAME`と`AWS_REGION`をecspressoへ渡す。ecspresso側ではAPIコンテナのlog driverを`awsfirelens`にし、FireLens sidecarの出力先としてこのlog groupを使う。
+API ServiceのFireLens構成では、Backend側でFireLens custom imageをbuildし、Terraform output `firelens_ecr_repository_url` のECR repositoryへpushする。FargateではFireLens custom configのS3直接参照を使わず、image内のconfig fileを参照する。
+
+```json
+"firelensConfiguration": {
+  "type": "fluentbit",
+  "options": {
+    "enable-ecs-log-metadata": "true",
+    "config-file-type": "file",
+    "config-file-value": "/fluent-bit/etc/fluent-bit-custom.conf"
+  }
+}
+```
+
+Backend側では以下のTerraform root outputを参照する。
+
+- `firelens_ecr_repository_url`
+- `new_relic_firelens_image`
+- `external_service_secret_arn`
+- `new_relic_log_endpoint`
+- `api_log_group_name`
+
+Terraform側ではFireLens custom image用ECR repositoryを`environments/dev`で作成する。GitHub Actions backend deploy roleにはこのrepositoryへのpush権限を付与する。ECS task execution roleにはFireLens image pull権限と、New Relic License Keyを含む外部サービスsecretの取得権限を付与する。CloudWatch Logsへの通常ログ出力はECS task roleに付与した`logs:CreateLogStream`、`logs:PutLogEvents`で行う。

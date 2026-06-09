@@ -72,30 +72,22 @@ resource "aws_iam_role_policy" "task_execution_secrets_manager" {
   policy = data.aws_iam_policy_document.task_execution_secrets_manager.json
 }
 
-data "aws_iam_policy_document" "task_execution_firelens_config" {
+data "aws_iam_policy_document" "task_execution_firelens_ecr_pull" {
   statement {
     actions = [
-      "s3:GetBucketLocation",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
     ]
 
     resources = [
-      var.firelens_config_bucket_arn,
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:GetObject",
-    ]
-
-    resources = [
-      var.firelens_config_s3_arn,
+      var.ecr_repository_arns["firelens"],
     ]
   }
 }
 
-resource "aws_iam_role_policy" "task_execution_firelens_config" {
-  name   = "${var.name}-ecs-task-execution-firelens-config"
+resource "aws_iam_role_policy" "task_execution_firelens_ecr_pull" {
+  name   = "${var.name}-ecs-task-execution-firelens-ecr-pull"
   role   = aws_iam_role.task_execution.id
-  policy = data.aws_iam_policy_document.task_execution_firelens_config.json
+  policy = data.aws_iam_policy_document.task_execution_firelens_ecr_pull.json
 }

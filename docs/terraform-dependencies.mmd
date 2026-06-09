@@ -1,17 +1,26 @@
 flowchart TB
   root["environments/dev"]
-  shared["environments/shared"]
 
   subgraph registry["container-registry"]
     api_repo["API ECR repository"]
     worker_repo["Worker ECR repository"]
+    migration_repo["Migration ECR repository"]
+    firelens_repo["FireLens ECR repository"]
   end
 
   subgraph containers["containers"]
-    ecr_data["Existing ECR repository data"]
-    cluster["Cluster"]
+    cluster["ECS cluster"]
     task_execution_role["Task execution role"]
     task_role["Task role"]
+    api_logs["API log group"]
+    migration_logs["Migration log group"]
+  end
+
+  subgraph database_module["database"]
+    aurora["Aurora PostgreSQL cluster"]
+    db_subnet_group["DB subnet group"]
+    db_sg["Aurora SG"]
+    db_secret["RDS managed master secret"]
   end
 
   subgraph network["network"]
@@ -21,7 +30,7 @@ flowchart TB
 
     public["Public subnets\n10.20.0.0/24\n10.20.1.0/24"]
     private["Private subnets\n10.20.10.0/24\n10.20.11.0/24"]
-    database["Database subnets\n10.20.20.0/24\n10.20.21.0/24"]
+    database_subnets["Database subnets\n10.20.20.0/24\n10.20.21.0/24"]
     cache["Cache subnets\n10.20.30.0/24\n10.20.31.0/24"]
 
     public_rt["Public route table\n0.0.0.0/0 -> IGW"]
@@ -38,22 +47,47 @@ flowchart TB
     ecs_task_sg["ECS Task SG"]
   end
 
-  shared --> registry
+  subgraph backend_deployment["backend-deployment"]
+    github_oidc["GitHub OIDC provider"]
+    github_role["GitHub Actions backend role"]
+  end
+
+  root --> registry
   root --> containers
+  root --> database_module
   root --> network
-  containers --> ecr_data
-  ecr_data --> api_repo
-  ecr_data --> worker_repo
+  root --> backend_deployment
+
+  containers --> api_repo
+  containers --> worker_repo
+  containers --> migration_repo
+  containers --> firelens_repo
+  backend_deployment --> api_repo
+  backend_deployment --> worker_repo
+  backend_deployment --> migration_repo
+  backend_deployment --> firelens_repo
+  backend_deployment --> task_execution_role
+  backend_deployment --> task_role
+
+  database_module --> database_subnets
+  database_module --> ecs_task_sg
+  db_subnet_group --> database_subnets
+  db_sg --> ecs_task_sg
+  aurora --> db_subnet_group
+  aurora --> db_sg
+  aurora --> db_secret
+
   route53 --> cloudfront
   route53 --> acm
   alb_sg --> public_alb
   alb_sg --> ecs_task_sg
   public_alb --> public
+  public_alb --> api_tg
   api_tg --> ecs_task_sg
   public --> public_rt
   public --> nat
   public_rt --> igw
   private --> private_rt
   private_rt --> nat
-  database --> database_rt
+  database_subnets --> database_rt
   cache --> cache_rt

@@ -1,5 +1,5 @@
 locals {
-  repositories = toset(["api", "worker", "migration"])
+  repositories = toset(["api", "worker", "migration", "firelens"])
 }
 
 resource "aws_ecr_repository" "this" {

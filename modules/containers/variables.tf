@@ -19,12 +19,12 @@ variable "external_service_secret_name" {
   type        = string
 }
 
-variable "firelens_config_s3_arn" {
-  description = "S3 object ARN for the FireLens Fluent Bit config."
-  type        = string
+variable "ecr_repository_urls" {
+  description = "ECR repository URLs keyed by workload name."
+  type        = map(string)
 }
 
-variable "firelens_config_bucket_arn" {
-  description = "S3 bucket ARN containing the FireLens Fluent Bit config."
-  type        = string
+variable "ecr_repository_arns" {
+  description = "ECR repository ARNs keyed by workload name."
+  type        = map(string)
 }
