@@ -98,6 +98,11 @@ output "new_relic_log_endpoint" {
   value       = "https://log-api.jp.nr-data.net/log/v1"
 }
 
+output "firelens_config_s3_arn" {
+  description = "S3 object ARN for the FireLens Fluent Bit config."
+  value       = data.terraform_remote_state.shared.outputs.firelens_config_s3_arn
+}
+
 output "ecs_task_security_group_id" {
   description = "Security group ID attached to ECS tasks."
   value       = module.network.ecs_task_security_group_id

@@ -16,6 +16,8 @@ module "containers" {
   name                            = local.name
   database_master_user_secret_arn = module.database.master_user_secret_arn
   external_service_secret_name    = var.external_service_secret_name
+  firelens_config_bucket_arn      = data.terraform_remote_state.shared.outputs.firelens_config_bucket_arn
+  firelens_config_s3_arn          = data.terraform_remote_state.shared.outputs.firelens_config_s3_arn
 }
 
 module "database" {

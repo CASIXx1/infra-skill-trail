@@ -67,3 +67,9 @@ variable "terraform_state_key" {
   description = "S3 object key for the dev Terraform state read by backend deploy workflows."
   type        = string
 }
+
+variable "shared_terraform_state_key" {
+  description = "S3 object key for the shared Terraform state."
+  type        = string
+  default     = "infra-skill-trail/shared/terraform.tfstate"
+}

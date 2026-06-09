@@ -3,3 +3,9 @@ module "container_registry" {
 
   name = local.name
 }
+
+module "firelens_config" {
+  source = "../../modules/firelens-config"
+
+  name = local.name
+}

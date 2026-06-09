@@ -71,3 +71,31 @@ resource "aws_iam_role_policy" "task_execution_secrets_manager" {
   role   = aws_iam_role.task_execution.id
   policy = data.aws_iam_policy_document.task_execution_secrets_manager.json
 }
+
+data "aws_iam_policy_document" "task_execution_firelens_config" {
+  statement {
+    actions = [
+      "s3:GetBucketLocation",
+    ]
+
+    resources = [
+      var.firelens_config_bucket_arn,
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      var.firelens_config_s3_arn,
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "task_execution_firelens_config" {
+  name   = "${var.name}-ecs-task-execution-firelens-config"
+  role   = aws_iam_role.task_execution.id
+  policy = data.aws_iam_policy_document.task_execution_firelens_config.json
+}
