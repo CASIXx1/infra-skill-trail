@@ -158,6 +158,31 @@ output "database_master_user_secret_arn" {
   value       = module.database.master_user_secret_arn
 }
 
+output "cache_primary_endpoint" {
+  description = "Primary endpoint address for ElastiCache."
+  value       = module.cache.primary_endpoint
+}
+
+output "cache_reader_endpoint" {
+  description = "Reader endpoint address for ElastiCache."
+  value       = module.cache.reader_endpoint
+}
+
+output "cache_port" {
+  description = "ElastiCache port."
+  value       = module.cache.port
+}
+
+output "cache_auth_token_secret_arn" {
+  description = "Secrets Manager secret ARN containing the ElastiCache AUTH token."
+  value       = module.cache.auth_token_secret_arn
+}
+
+output "cache_security_group_id" {
+  description = "Security group ID attached to ElastiCache."
+  value       = module.cache.security_group_id
+}
+
 output "alb_security_group_id" {
   description = "Security group ID attached to the public ALB."
   value       = module.network.alb_security_group_id
