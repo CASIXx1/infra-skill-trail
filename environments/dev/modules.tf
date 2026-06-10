@@ -21,6 +21,7 @@ module "containers" {
 
   name                            = local.name
   database_master_user_secret_arn = module.database.master_user_secret_arn
+  cache_auth_token_secret_arn     = module.cache.auth_token_secret_arn
   external_service_secret_name    = var.external_service_secret_name
   ecr_repository_urls             = module.container_registry.repository_urls
   ecr_repository_arns             = module.container_registry.repository_arns
@@ -32,6 +33,15 @@ module "database" {
   name                       = local.name
   vpc_id                     = module.network.vpc_id
   database_subnet_ids        = module.network.database_subnet_ids
+  ecs_task_security_group_id = module.network.ecs_task_security_group_id
+}
+
+module "cache" {
+  source = "../../modules/cache"
+
+  name                       = local.name
+  vpc_id                     = module.network.vpc_id
+  cache_subnet_ids           = module.network.cache_subnet_ids
   ecs_task_security_group_id = module.network.ecs_task_security_group_id
 }
 
