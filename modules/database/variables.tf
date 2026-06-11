@@ -30,6 +30,32 @@ variable "master_username" {
   default     = "postgres"
 }
 
+variable "app_username" {
+  description = "Application database username. This user must be created in PostgreSQL by the infrastructure operation SQL."
+  type        = string
+  default     = "appuser"
+}
+
+variable "app_password" {
+  description = "Application database user password."
+  type        = string
+  default     = "apppassword"
+  sensitive   = true
+}
+
+variable "migration_username" {
+  description = "Migration database username. This user must be created in PostgreSQL by the infrastructure operation SQL."
+  type        = string
+  default     = "migrationuser"
+}
+
+variable "migration_password" {
+  description = "Migration database user password."
+  type        = string
+  default     = "migrationpassword"
+  sensitive   = true
+}
+
 variable "engine_version" {
   description = "Aurora PostgreSQL engine version."
   type        = string

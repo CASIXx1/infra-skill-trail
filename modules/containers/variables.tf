@@ -14,6 +14,16 @@ variable "database_master_user_secret_arn" {
   type        = string
 }
 
+variable "database_app_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the application database user credentials."
+  type        = string
+}
+
+variable "database_migration_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the migration database user credentials."
+  type        = string
+}
+
 variable "cache_auth_token_secret_arn" {
   description = "Secrets Manager secret ARN for the ElastiCache AUTH token."
   type        = string

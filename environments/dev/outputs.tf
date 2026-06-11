@@ -158,6 +158,26 @@ output "database_master_user_secret_arn" {
   value       = module.database.master_user_secret_arn
 }
 
+output "database_app_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the application database user credentials."
+  value       = module.database.app_user_secret_arn
+}
+
+output "database_app_username" {
+  description = "Application database username."
+  value       = module.database.app_username
+}
+
+output "database_migration_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the migration database user credentials."
+  value       = module.database.migration_user_secret_arn
+}
+
+output "database_migration_username" {
+  description = "Migration database username."
+  value       = module.database.migration_username
+}
+
 output "cache_primary_endpoint" {
   description = "Primary endpoint address for ElastiCache."
   value       = module.cache.primary_endpoint
@@ -271,5 +291,7 @@ output "migration_ecspresso_env" {
     DB_PORT                      = tostring(module.database.port)
     DB_NAME                      = module.database.database_name
     DB_MASTER_USER_SECRET_ARN    = module.database.master_user_secret_arn
+    DB_APP_USER_SECRET_ARN       = module.database.app_user_secret_arn
+    DB_MIGRATION_USER_SECRET_ARN = module.database.migration_user_secret_arn
   }
 }
