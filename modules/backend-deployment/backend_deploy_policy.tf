@@ -85,6 +85,17 @@ data "aws_iam_policy_document" "backend_deploy" {
   }
 
   statement {
+    sid = "ApplicationAutoScalingRead"
+
+    actions = [
+      "application-autoscaling:DescribeScalableTargets",
+      "application-autoscaling:DescribeScalingPolicies",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
     sid = "CloudWatchLogsRead"
 
     actions = [

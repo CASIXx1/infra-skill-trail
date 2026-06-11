@@ -38,6 +38,16 @@ output "worker_log_group_arn" {
   value       = aws_cloudwatch_log_group.worker.arn
 }
 
+output "scheduled_log_log_group_name" {
+  description = "CloudWatch Logs log group name for the scheduled log ECS task."
+  value       = aws_cloudwatch_log_group.scheduled_log.name
+}
+
+output "scheduled_log_log_group_arn" {
+  description = "CloudWatch Logs log group ARN for the scheduled log ECS task."
+  value       = aws_cloudwatch_log_group.scheduled_log.arn
+}
+
 output "external_service_secret_arn" {
   description = "Secrets Manager secret ARN for external service keys."
   value       = data.aws_secretsmanager_secret.external_service.arn
@@ -106,6 +116,11 @@ output "worker_repository_url" {
 output "migration_repository_url" {
   description = "Migration ECR repository URL."
   value       = var.ecr_repository_urls["migration"]
+}
+
+output "scheduled_log_repository_url" {
+  description = "Scheduled log ECR repository URL."
+  value       = var.ecr_repository_urls["scheduled-log"]
 }
 
 output "firelens_repository_url" {

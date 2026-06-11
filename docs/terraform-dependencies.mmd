@@ -5,6 +5,7 @@ flowchart TB
     api_repo["API ECR repository"]
     worker_repo["Worker ECR repository"]
     migration_repo["Migration ECR repository"]
+    scheduled_log_repo["Scheduled-log ECR repository"]
     firelens_repo["FireLens ECR repository"]
   end
 
@@ -15,6 +16,13 @@ flowchart TB
     api_logs["API log group"]
     migration_logs["Migration log group"]
     worker_logs["Worker log group"]
+    scheduled_log_logs["Scheduled-log log group"]
+  end
+
+  subgraph scheduler["scheduler"]
+    scheduler_schedule["EventBridge Scheduler\nrate(1 minute)"]
+    scheduler_role["Scheduler IAM role"]
+    scheduled_task_family["Scheduled-log task definition family"]
   end
 
   subgraph worker["worker"]
@@ -61,6 +69,7 @@ flowchart TB
 
   root --> registry
   root --> containers
+  root --> scheduler
   root --> worker
   root --> database_module
   root --> network
@@ -69,14 +78,25 @@ flowchart TB
   containers --> api_repo
   containers --> worker_repo
   containers --> migration_repo
+  containers --> scheduled_log_repo
   containers --> firelens_repo
   backend_deployment --> api_repo
   backend_deployment --> worker_repo
   backend_deployment --> migration_repo
+  backend_deployment --> scheduled_log_repo
   backend_deployment --> firelens_repo
   backend_deployment --> worker_logs
+  backend_deployment --> scheduled_log_logs
   backend_deployment --> task_execution_role
   backend_deployment --> task_role
+
+  scheduler_schedule --> cluster
+  scheduler_schedule --> private
+  scheduler_schedule --> ecs_task_sg
+  scheduler_schedule --> scheduled_task_family
+  scheduler_role --> task_execution_role
+  scheduler_role --> task_role
+  scheduler_role --> scheduled_task_family
 
   worker_queue --> worker_dlq
   worker_sqs_policy --> worker_queue

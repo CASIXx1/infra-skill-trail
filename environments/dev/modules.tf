@@ -54,6 +54,20 @@ module "cache" {
   ecs_task_security_group_id = module.network.ecs_task_security_group_id
 }
 
+module "scheduler" {
+  source = "../../modules/scheduler"
+
+  name                      = local.name
+  cluster_arn               = module.containers.cluster_arn
+  private_subnet_ids        = module.network.private_subnet_ids
+  security_group_id         = module.network.ecs_task_security_group_id
+  task_role_arn             = module.containers.task_role_arn
+  task_execution_role_arn   = module.containers.task_execution_role_arn
+  task_definition_family    = "${local.name}-scheduled-log"
+  bootstrap_container_image = "${module.container_registry.scheduled_log_repository_url}:bootstrap"
+  schedule_state            = var.scheduled_log_scheduler_state
+}
+
 module "backend_deployment" {
   source = "../../modules/backend-deployment"
 
@@ -65,6 +79,7 @@ module "backend_deployment" {
     module.containers.api_log_group_name,
     module.containers.migration_log_group_name,
     module.containers.worker_log_group_name,
+    module.containers.scheduled_log_log_group_name,
   ]
   ecs_task_role_arn = module.containers.task_role_arn
   additional_ecs_task_role_arns = [

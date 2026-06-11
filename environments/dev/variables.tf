@@ -28,6 +28,17 @@ variable "github_environment" {
   default     = "dev"
 }
 
+variable "scheduled_log_scheduler_state" {
+  description = "EventBridge Scheduler state for the scheduled-log task."
+  type        = string
+  default     = "ENABLED"
+
+  validation {
+    condition     = contains(["ENABLED", "DISABLED"], var.scheduled_log_scheduler_state)
+    error_message = "scheduled_log_scheduler_state must be ENABLED or DISABLED."
+  }
+}
+
 variable "external_service_secret_name" {
   description = "Name of the existing Secrets Manager secret containing external service keys."
   type        = string
