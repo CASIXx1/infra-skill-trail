@@ -14,6 +14,13 @@ flowchart TB
     task_role["Task role"]
     api_logs["API log group"]
     migration_logs["Migration log group"]
+    worker_logs["Worker log group"]
+  end
+
+  subgraph worker["worker"]
+    worker_queue["Worker SQS queue"]
+    worker_dlq["Worker DLQ"]
+    worker_sqs_policy["Worker SQS task role policy"]
   end
 
   subgraph database_module["database"]
@@ -54,6 +61,7 @@ flowchart TB
 
   root --> registry
   root --> containers
+  root --> worker
   root --> database_module
   root --> network
   root --> backend_deployment
@@ -66,8 +74,13 @@ flowchart TB
   backend_deployment --> worker_repo
   backend_deployment --> migration_repo
   backend_deployment --> firelens_repo
+  backend_deployment --> worker_logs
   backend_deployment --> task_execution_role
   backend_deployment --> task_role
+
+  worker_queue --> worker_dlq
+  worker_sqs_policy --> worker_queue
+  worker_sqs_policy --> task_role
 
   database_module --> database_subnets
   database_module --> ecs_task_sg

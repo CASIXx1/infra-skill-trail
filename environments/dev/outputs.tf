@@ -68,6 +68,26 @@ output "ecs_task_role_name" {
   value       = module.containers.task_role_name
 }
 
+output "api_ecs_task_role_arn" {
+  description = "ECS task role ARN for the API service managed by ecspresso."
+  value       = module.containers.api_task_role_arn
+}
+
+output "api_ecs_task_role_name" {
+  description = "ECS task role name for the API service managed by ecspresso."
+  value       = module.containers.api_task_role_name
+}
+
+output "worker_ecs_task_role_arn" {
+  description = "ECS task role ARN for the worker service managed by ecspresso."
+  value       = module.worker.task_role_arn
+}
+
+output "worker_ecs_task_role_name" {
+  description = "ECS task role name for the worker service managed by ecspresso."
+  value       = module.worker.task_role_name
+}
+
 output "nat_gateway_id" {
   description = "NAT Gateway ID."
   value       = module.network.nat_gateway_id
@@ -86,6 +106,11 @@ output "api_log_group_name" {
 output "migration_log_group_name" {
   description = "CloudWatch Logs log group name for migration tasks."
   value       = module.containers.migration_log_group_name
+}
+
+output "worker_log_group_name" {
+  description = "CloudWatch Logs log group name for the worker ECS service."
+  value       = module.containers.worker_log_group_name
 }
 
 output "external_service_secret_arn" {
@@ -258,6 +283,11 @@ output "ecs_private_subnet_ids" {
   value       = module.network.private_subnet_ids
 }
 
+output "private_subnet_ids" {
+  description = "Private subnet IDs for ECS tasks."
+  value       = module.network.private_subnet_ids
+}
+
 output "api_ecs_service_name" {
   description = "ECS service name for the API service managed by ecspresso."
   value       = "${local.name}-api"
@@ -271,6 +301,50 @@ output "worker_ecs_service_name" {
 output "migration_container_name" {
   description = "Container name for migration tasks managed by ecspresso."
   value       = "migration"
+}
+
+output "worker_queue_name" {
+  description = "Worker SQS queue name."
+  value       = module.worker.queue_name
+}
+
+output "worker_queue_url" {
+  description = "Worker SQS queue URL."
+  value       = module.worker.queue_url
+}
+
+output "worker_queue_arn" {
+  description = "Worker SQS queue ARN."
+  value       = module.worker.queue_arn
+}
+
+output "worker_dlq_name" {
+  description = "Worker SQS dead-letter queue name."
+  value       = module.worker.dlq_name
+}
+
+output "worker_dlq_url" {
+  description = "Worker SQS dead-letter queue URL."
+  value       = module.worker.dlq_url
+}
+
+output "worker_dlq_arn" {
+  description = "Worker SQS dead-letter queue ARN."
+  value       = module.worker.dlq_arn
+}
+
+output "worker_ecspresso_env" {
+  description = "Environment values for worker tasks managed by ecspresso."
+  value = {
+    ECS_CLUSTER_NAME        = module.containers.cluster_name
+    ECS_SERVICE_NAME        = "${local.name}-worker"
+    CONTAINER_NAME          = "worker"
+    SUBNET_IDS              = join(",", module.network.private_subnet_ids)
+    SECURITY_GROUP_IDS      = module.network.ecs_task_security_group_id
+    ASSIGN_PUBLIC_IP        = "false"
+    TASK_ROLE_ARN           = module.worker.task_role_arn
+    TASK_EXECUTION_ROLE_ARN = module.containers.task_execution_role_arn
+  }
 }
 
 output "migration_ecspresso_env" {

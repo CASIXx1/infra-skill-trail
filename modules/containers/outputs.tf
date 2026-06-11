@@ -28,6 +28,16 @@ output "migration_log_group_arn" {
   value       = aws_cloudwatch_log_group.migration.arn
 }
 
+output "worker_log_group_name" {
+  description = "CloudWatch Logs log group name for the worker ECS service."
+  value       = aws_cloudwatch_log_group.worker.name
+}
+
+output "worker_log_group_arn" {
+  description = "CloudWatch Logs log group ARN for the worker ECS service."
+  value       = aws_cloudwatch_log_group.worker.arn
+}
+
 output "external_service_secret_arn" {
   description = "Secrets Manager secret ARN for external service keys."
   value       = data.aws_secretsmanager_secret.external_service.arn
@@ -61,6 +71,16 @@ output "task_role_arn" {
 output "task_role_name" {
   description = "ECS task role name."
   value       = aws_iam_role.task.name
+}
+
+output "api_task_role_arn" {
+  description = "ECS task role ARN for the API service."
+  value       = aws_iam_role.api_task.arn
+}
+
+output "api_task_role_name" {
+  description = "ECS task role name for the API service."
+  value       = aws_iam_role.api_task.name
 }
 
 output "repository_urls" {

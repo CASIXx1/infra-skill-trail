@@ -29,6 +29,13 @@ module "containers" {
   ecr_repository_arns                = module.container_registry.repository_arns
 }
 
+module "worker" {
+  source = "../../modules/worker"
+
+  name               = local.name
+  api_task_role_name = module.containers.api_task_role_name
+}
+
 module "database" {
   source = "../../modules/database"
 
@@ -57,8 +64,13 @@ module "backend_deployment" {
   log_group_names = [
     module.containers.api_log_group_name,
     module.containers.migration_log_group_name,
+    module.containers.worker_log_group_name,
   ]
-  ecs_task_role_arn           = module.containers.task_role_arn
+  ecs_task_role_arn = module.containers.task_role_arn
+  additional_ecs_task_role_arns = [
+    module.containers.api_task_role_arn,
+    module.worker.task_role_arn,
+  ]
   ecs_task_execution_role_arn = module.containers.task_execution_role_arn
   terraform_state_bucket      = var.terraform_state_bucket
   terraform_state_key         = var.terraform_state_key
