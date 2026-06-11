@@ -19,12 +19,14 @@ module "container_registry" {
 module "containers" {
   source = "../../modules/containers"
 
-  name                            = local.name
-  database_master_user_secret_arn = module.database.master_user_secret_arn
-  cache_auth_token_secret_arn     = module.cache.auth_token_secret_arn
-  external_service_secret_name    = var.external_service_secret_name
-  ecr_repository_urls             = module.container_registry.repository_urls
-  ecr_repository_arns             = module.container_registry.repository_arns
+  name                               = local.name
+  database_master_user_secret_arn    = module.database.master_user_secret_arn
+  database_app_user_secret_arn       = module.database.app_user_secret_arn
+  database_migration_user_secret_arn = module.database.migration_user_secret_arn
+  cache_auth_token_secret_arn        = module.cache.auth_token_secret_arn
+  external_service_secret_name       = var.external_service_secret_name
+  ecr_repository_urls                = module.container_registry.repository_urls
+  ecr_repository_arns                = module.container_registry.repository_arns
 }
 
 module "database" {
@@ -48,10 +50,14 @@ module "cache" {
 module "backend_deployment" {
   source = "../../modules/backend-deployment"
 
-  role_name                   = "github-actions-backend-skill-trail"
-  github_repository           = "CASIXx1/backend-skill-trail"
-  github_environment          = var.github_environment
-  ecr_repository_arns         = values(module.container_registry.repository_arns)
+  role_name           = "github-actions-backend-skill-trail"
+  github_repository   = "CASIXx1/backend-skill-trail"
+  github_environment  = var.github_environment
+  ecr_repository_arns = values(module.container_registry.repository_arns)
+  log_group_names = [
+    module.containers.api_log_group_name,
+    module.containers.migration_log_group_name,
+  ]
   ecs_task_role_arn           = module.containers.task_role_arn
   ecs_task_execution_role_arn = module.containers.task_execution_role_arn
   terraform_state_bucket      = var.terraform_state_bucket

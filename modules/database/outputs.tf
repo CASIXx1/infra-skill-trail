@@ -42,3 +42,23 @@ output "master_user_secret_arn" {
   description = "Secrets Manager secret ARN for the RDS-managed master user credentials."
   value       = aws_rds_cluster.this.master_user_secret[0].secret_arn
 }
+
+output "app_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the application database user credentials."
+  value       = aws_secretsmanager_secret.app_user.arn
+}
+
+output "app_username" {
+  description = "Application database username."
+  value       = var.app_username
+}
+
+output "migration_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the migration database user credentials."
+  value       = aws_secretsmanager_secret.migration_user.arn
+}
+
+output "migration_username" {
+  description = "Migration database username."
+  value       = var.migration_username
+}

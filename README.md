@@ -59,7 +59,26 @@ Backend側では以下のTerraform root outputを参照する。
 - `firelens_ecr_repository_url`
 - `new_relic_firelens_image`
 - `external_service_secret_arn`
+- `database_app_user_secret_arn`
+- `database_migration_user_secret_arn`
 - `new_relic_log_endpoint`
 - `api_log_group_name`
+- `migration_log_group_name`
 
-Terraform側ではFireLens custom image用ECR repositoryを`environments/dev`で作成する。GitHub Actions backend deploy roleにはこのrepositoryへのpush権限を付与する。ECS task execution roleにはFireLens image pull権限と、New Relic License Keyを含む外部サービスsecretの取得権限を付与する。CloudWatch Logsへの通常ログ出力はECS task roleに付与した`logs:CreateLogStream`、`logs:PutLogEvents`で行う。
+AWS環境のBackend ECS task definitionでは、アプリケーション用DBユーザーのSecrets Manager ARNとしてTerraform output `database_app_user_secret_arn` を参照する。migration task definitionでは、migration用DBユーザーのSecrets Manager ARNとしてTerraform output `database_migration_user_secret_arn` を参照する。インフラ側ではAurora PostgreSQLへmaster userで接続し、以下のSQLを実行してDBユーザーと権限を作成する。
+
+```sql
+CREATE USER appuser WITH PASSWORD 'apppassword';
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO appuser;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO appuser;
+
+CREATE USER migrationuser WITH PASSWORD 'migrationpassword';
+GRANT ALL PRIVILEGES ON DATABASE app TO migrationuser;
+GRANT ALL PRIVILEGES ON SCHEMA public TO migrationuser;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO migrationuser;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO migrationuser;
+```
+
+Backend側へは、API/workerは`database_app_user_secret_arn`を使い、migration taskは`database_migration_user_secret_arn`を使うことを連携する。どちらのsecretも`username`、`password`、`engine`、`host`、`port`、`dbname`を含むJSON形式である。
+
+Terraform側ではFireLens custom image用ECR repositoryを`environments/dev`で作成する。GitHub Actions backend deploy roleにはこのrepositoryへのpush権限と、Terraform output `api_log_group_name`、`migration_log_group_name` のログイベントを参照するための`logs:GetLogEvents`権限を付与する。ECS task execution roleにはFireLens image pull権限と、New Relic License Keyを含む外部サービスsecretの取得権限を付与する。CloudWatch Logsへの通常ログ出力はECS task roleに付与した`logs:CreateLogStream`、`logs:PutLogEvents`で行う。

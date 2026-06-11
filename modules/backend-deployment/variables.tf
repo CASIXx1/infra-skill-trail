@@ -18,6 +18,11 @@ variable "ecr_repository_arns" {
   type        = list(string)
 }
 
+variable "log_group_names" {
+  description = "CloudWatch Logs log group names allowed for reading deployment logs."
+  type        = list(string)
+}
+
 variable "ecs_task_role_arn" {
   description = "ECS task role ARN allowed for iam:PassRole."
   type        = string

@@ -1,3 +1,16 @@
+data "aws_partition" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
+locals {
+  log_group_read_arns = [
+    for log_group_name in var.log_group_names :
+    "arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:${log_group_name}:*"
+  ]
+}
+
 data "aws_iam_policy_document" "backend_deploy" {
   statement {
     sid = "EcrAuthorization"
@@ -68,6 +81,16 @@ data "aws_iam_policy_document" "backend_deploy" {
     ]
 
     resources = ["*"]
+  }
+
+  statement {
+    sid = "CloudWatchLogsRead"
+
+    actions = [
+      "logs:GetLogEvents",
+    ]
+
+    resources = local.log_group_read_arns
   }
 
   statement {
