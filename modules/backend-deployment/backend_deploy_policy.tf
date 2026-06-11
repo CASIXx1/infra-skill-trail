@@ -42,6 +42,7 @@ data "aws_iam_policy_document" "backend_deploy" {
     actions = [
       "ecr:BatchGetImage",
       "ecr:DescribeImages",
+      "ecr:GetDownloadUrlForLayer",
     ]
 
     resources = var.ecr_repository_arns
