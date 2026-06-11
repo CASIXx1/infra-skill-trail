@@ -10,7 +10,11 @@ data "aws_iam_policy_document" "ecs_tasks_assume_role" {
 }
 
 locals {
-  api_log_group_arn = trimsuffix(aws_cloudwatch_log_group.api.arn, ":*")
+  task_log_group_arns = [
+    trimsuffix(aws_cloudwatch_log_group.api.arn, ":*"),
+    trimsuffix(aws_cloudwatch_log_group.migration.arn, ":*"),
+    trimsuffix(aws_cloudwatch_log_group.worker.arn, ":*"),
+  ]
 }
 
 resource "aws_iam_role" "task_execution" {
@@ -28,6 +32,11 @@ resource "aws_iam_role" "task" {
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role.json
 }
 
+resource "aws_iam_role" "api_task" {
+  name               = "${var.name}-api-ecs-task"
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role.json
+}
+
 data "aws_iam_policy_document" "task_cloudwatch_logs" {
   statement {
     actions = [
@@ -35,7 +44,10 @@ data "aws_iam_policy_document" "task_cloudwatch_logs" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["${local.api_log_group_arn}:log-stream:*"]
+    resources = [
+      for log_group_arn in local.task_log_group_arns :
+      "${log_group_arn}:log-stream:*"
+    ]
   }
 
   statement {
@@ -43,13 +55,19 @@ data "aws_iam_policy_document" "task_cloudwatch_logs" {
       "logs:DescribeLogStreams",
     ]
 
-    resources = [local.api_log_group_arn]
+    resources = local.task_log_group_arns
   }
 }
 
 resource "aws_iam_role_policy" "task_cloudwatch_logs" {
   name   = "${var.name}-ecs-task-cloudwatch-logs"
   role   = aws_iam_role.task.id
+  policy = data.aws_iam_policy_document.task_cloudwatch_logs.json
+}
+
+resource "aws_iam_role_policy" "api_task_cloudwatch_logs" {
+  name   = "${var.name}-api-ecs-task-cloudwatch-logs"
+  role   = aws_iam_role.api_task.id
   policy = data.aws_iam_policy_document.task_cloudwatch_logs.json
 }
 

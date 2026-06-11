@@ -28,6 +28,12 @@ variable "ecs_task_role_arn" {
   type        = string
 }
 
+variable "additional_ecs_task_role_arns" {
+  description = "Additional ECS task role ARNs allowed for iam:PassRole."
+  type        = list(string)
+  default     = []
+}
+
 variable "ecs_task_execution_role_arn" {
   description = "ECS task execution role ARN allowed for iam:PassRole."
   type        = string

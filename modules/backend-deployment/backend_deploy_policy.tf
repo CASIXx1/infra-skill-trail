@@ -124,10 +124,13 @@ data "aws_iam_policy_document" "backend_deploy" {
       "iam:PassRole",
     ]
 
-    resources = [
-      var.ecs_task_role_arn,
-      var.ecs_task_execution_role_arn,
-    ]
+    resources = concat(
+      [
+        var.ecs_task_execution_role_arn,
+        var.ecs_task_role_arn,
+      ],
+      var.additional_ecs_task_role_arns,
+    )
 
     condition {
       test     = "StringEquals"
