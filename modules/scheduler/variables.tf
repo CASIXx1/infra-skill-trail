@@ -28,29 +28,26 @@ variable "task_execution_role_arn" {
   type        = string
 }
 
-variable "task_definition_family" {
-  description = "ECS task definition family registered by the backend deployment."
-  type        = string
-}
-
-variable "bootstrap_container_image" {
-  description = "Container image used only for the Terraform-managed bootstrap task definition revision."
-  type        = string
-}
-
-variable "schedule_expression" {
-  description = "EventBridge Scheduler expression for launching the scheduled ECS task."
-  type        = string
-  default     = "rate(1 minute)"
-}
-
-variable "schedule_state" {
-  description = "EventBridge Scheduler schedule state."
-  type        = string
-  default     = "DISABLED"
+variable "task_definitions" {
+  description = "Scheduled job task definitions keyed by job key."
+  type = map(object({
+    family                   = string
+    job_name                 = string
+    schedule_expression      = string
+    schedule_state           = string
+    bootstrap_container_image = string
+  }))
 
   validation {
-    condition     = contains(["ENABLED", "DISABLED"], var.schedule_state)
-    error_message = "schedule_state must be ENABLED or DISABLED."
+    condition = alltrue([
+      for task_definition in values(var.task_definitions) :
+      contains(["ENABLED", "DISABLED"], task_definition.schedule_state)
+    ])
+    error_message = "Each task definition schedule_state must be ENABLED or DISABLED."
   }
+}
+
+variable "notification_email" {
+  description = "Email address subscribed to scheduled notification SNS messages."
+  type        = string
 }

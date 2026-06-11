@@ -310,17 +310,37 @@ output "worker_ecs_service_name" {
 
 output "scheduled_log_task_definition_family" {
   description = "ECS task definition family for the scheduled log task managed by backend deployment."
-  value       = module.scheduler.task_definition_family
+  value       = module.scheduler.task_definition_family["scheduled-log"]
+}
+
+output "scheduled_notification_task_definition_family" {
+  description = "ECS task definition family for the scheduled notification task managed by backend deployment."
+  value       = module.scheduler.task_definition_family["scheduled-notification"]
 }
 
 output "scheduled_log_scheduler_name" {
   description = "EventBridge Scheduler schedule name for the scheduled log task."
-  value       = module.scheduler.name
+  value       = module.scheduler.name["scheduled-log"]
+}
+
+output "scheduled_notification_scheduler_name" {
+  description = "EventBridge Scheduler schedule name for the scheduled notification task."
+  value       = module.scheduler.name["scheduled-notification"]
 }
 
 output "scheduled_log_scheduler_arn" {
   description = "EventBridge Scheduler schedule ARN for the scheduled log task."
-  value       = module.scheduler.arn
+  value       = module.scheduler.arn["scheduled-log"]
+}
+
+output "scheduled_notification_scheduler_arn" {
+  description = "EventBridge Scheduler schedule ARN for the scheduled notification task."
+  value       = module.scheduler.arn["scheduled-notification"]
+}
+
+output "scheduled_notification_topic_arn" {
+  description = "SNS topic ARN for scheduled notification jobs."
+  value       = module.scheduler.notification_topic_arn
 }
 
 output "migration_container_name" {
@@ -407,5 +427,24 @@ output "scheduled_log_ecspresso_env" {
     ASSIGN_PUBLIC_IP        = "false"
     LOG_GROUP_NAME          = module.containers.scheduled_log_log_group_name
     AWS_REGION              = var.aws_region
+    JOB_NAME                = "log_heartbeat"
+    SNS_TOPIC_ARN           = module.scheduler.notification_topic_arn
+  }
+}
+
+output "scheduled_notification_ecspresso_env" {
+  description = "Environment values for scheduled notification tasks managed by ecspresso."
+  value = {
+    ECS_CLUSTER_NAME        = module.containers.cluster_name
+    CONTAINER_NAME          = "scheduled-log"
+    TASK_ROLE_ARN           = module.containers.task_role_arn
+    TASK_EXECUTION_ROLE_ARN = module.containers.task_execution_role_arn
+    SUBNET_IDS              = join(",", module.network.private_subnet_ids)
+    SECURITY_GROUP_IDS      = module.network.ecs_task_security_group_id
+    ASSIGN_PUBLIC_IP        = "false"
+    LOG_GROUP_NAME          = module.containers.scheduled_log_log_group_name
+    AWS_REGION              = var.aws_region
+    JOB_NAME                = "send_notification"
+    SNS_TOPIC_ARN           = module.scheduler.notification_topic_arn
   }
 }

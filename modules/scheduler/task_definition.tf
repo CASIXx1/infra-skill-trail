@@ -1,5 +1,7 @@
 resource "aws_ecs_task_definition" "bootstrap" {
-  family                   = var.task_definition_family
+  for_each = var.task_definitions
+
+  family                   = each.value.family
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "256"
@@ -10,9 +12,24 @@ resource "aws_ecs_task_definition" "bootstrap" {
   container_definitions = jsonencode([
     {
       name      = "scheduled-log"
-      image     = var.bootstrap_container_image
+      image     = each.value.bootstrap_container_image
       essential = true
-      command   = ["bootstrap"]
+      command   = ["sh", "-c", "true"]
+      versionConsistency = "enabled"
+      environment = [
+        {
+          name  = "JOB_NAME"
+          value = each.value.job_name
+        },
+        {
+          name  = "SNS_TOPIC_ARN"
+          value = aws_sns_topic.scheduled_notifications.arn
+        },
+        {
+          name  = "SCHEDULE_NAME"
+          value = "${var.name}-${each.key}"
+        }
+      ]
     }
   ])
 

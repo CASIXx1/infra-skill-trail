@@ -20,9 +20,13 @@ flowchart TB
   end
 
   subgraph scheduler["scheduler"]
-    scheduler_schedule["EventBridge Scheduler\nrate(1 minute)"]
+    scheduled_log_schedule["EventBridge Scheduler\nscheduled-log / rate(1 minute)"]
+    scheduled_notification_schedule["EventBridge Scheduler\nscheduled-notification / rate(1 day)"]
     scheduler_role["Scheduler IAM role"]
     scheduled_task_family["Scheduled-log task definition family"]
+    scheduled_notification_family["Scheduled-notification task definition family"]
+    scheduled_notifications_topic["SNS topic"]
+    scheduled_notifications_email["SNS email subscription"]
   end
 
   subgraph worker["worker"]
@@ -90,13 +94,20 @@ flowchart TB
   backend_deployment --> task_execution_role
   backend_deployment --> task_role
 
-  scheduler_schedule --> cluster
-  scheduler_schedule --> private
-  scheduler_schedule --> ecs_task_sg
-  scheduler_schedule --> scheduled_task_family
+  scheduled_log_schedule --> cluster
+  scheduled_log_schedule --> private
+  scheduled_log_schedule --> ecs_task_sg
+  scheduled_log_schedule --> scheduled_task_family
+  scheduled_notification_schedule --> cluster
+  scheduled_notification_schedule --> private
+  scheduled_notification_schedule --> ecs_task_sg
+  scheduled_notification_schedule --> scheduled_notification_family
+  scheduled_notifications_email --> scheduled_notifications_topic
+  scheduled_notification_family --> scheduled_notifications_topic
   scheduler_role --> task_execution_role
   scheduler_role --> task_role
   scheduler_role --> scheduled_task_family
+  scheduler_role --> scheduled_notification_family
 
   worker_queue --> worker_dlq
   worker_sqs_policy --> worker_queue

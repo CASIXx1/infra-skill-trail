@@ -5,7 +5,10 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  task_definition_arn = "arn:${data.aws_partition.current.partition}:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/${var.task_definition_family}"
+  task_definition_arns = {
+    for key, task_definition in var.task_definitions :
+    key => "arn:${data.aws_partition.current.partition}:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/${task_definition.family}"
+  }
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -31,7 +34,8 @@ data "aws_iam_policy_document" "this" {
     ]
 
     resources = [
-      "${local.task_definition_arn}:*",
+      for task_definition_arn in values(local.task_definition_arns) :
+      "${task_definition_arn}:*"
     ]
 
     condition {
@@ -57,6 +61,24 @@ data "aws_iam_policy_document" "this" {
       values   = ["ecs-tasks.amazonaws.com"]
     }
   }
+}
+
+data "aws_iam_policy_document" "task_sns_publish" {
+  statement {
+    actions = [
+      "sns:Publish",
+    ]
+
+    resources = [
+      aws_sns_topic.scheduled_notifications.arn,
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "task_sns_publish" {
+  name   = "${var.name}-scheduled-sns-publish"
+  role   = split("/", var.task_role_arn)[1]
+  policy = data.aws_iam_policy_document.task_sns_publish.json
 }
 
 resource "aws_iam_role_policy" "this" {
