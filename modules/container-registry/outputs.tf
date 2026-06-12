@@ -23,6 +23,11 @@ output "migration_repository_url" {
   value       = aws_ecr_repository.this["migration"].repository_url
 }
 
+output "scheduled_log_repository_url" {
+  description = "Scheduled log ECR repository URL."
+  value       = aws_ecr_repository.this["scheduled-log"].repository_url
+}
+
 output "firelens_repository_url" {
   description = "FireLens ECR repository URL."
   value       = aws_ecr_repository.this["firelens"].repository_url

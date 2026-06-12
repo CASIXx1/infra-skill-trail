@@ -1,5 +1,7 @@
 github_environment = "dev"
 
+notification_email = "notify@example.com"
+
 external_service_secret_name = "dev/external_service_keys"
 
 api_domain_name           = "api.example.com"

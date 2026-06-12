@@ -14,6 +14,7 @@ locals {
     trimsuffix(aws_cloudwatch_log_group.api.arn, ":*"),
     trimsuffix(aws_cloudwatch_log_group.migration.arn, ":*"),
     trimsuffix(aws_cloudwatch_log_group.worker.arn, ":*"),
+    trimsuffix(aws_cloudwatch_log_group.scheduled_log.arn, ":*"),
   ]
 }
 

@@ -59,6 +59,7 @@ Backend側では以下のTerraform root outputを参照する。
 - `api_ecr_repository_url`
 - `worker_ecr_repository_url`
 - `migration_ecr_repository_url`
+- `scheduled_log_ecr_repository_url`
 - `firelens_ecr_repository_url`
 - `new_relic_firelens_image`
 - `external_service_secret_arn`
@@ -68,13 +69,23 @@ Backend側では以下のTerraform root outputを参照する。
 - `api_log_group_name`
 - `worker_log_group_name`
 - `migration_log_group_name`
+- `scheduled_log_log_group_name`
 - `worker_queue_url`
 - `worker_queue_arn`
 - `api_ecs_service_name`
 - `worker_ecs_service_name`
+- `scheduled_log_task_definition_family`
+- `scheduled_notification_task_definition_family`
+- `scheduled_log_scheduler_name`
+- `scheduled_notification_scheduler_name`
+- `scheduled_log_scheduler_arn`
+- `scheduled_notification_scheduler_arn`
+- `scheduled_notification_topic_arn`
 - `api_target_group_arn`
 - `private_subnet_ids`
 - `worker_ecspresso_env`
+- `scheduled_log_ecspresso_env`
+- `scheduled_notification_ecspresso_env`
 
 AWS環境のBackend ECS task definitionでは、アプリケーション用DBユーザーのSecrets Manager ARNとしてTerraform output `database_app_user_secret_arn` を参照する。migration task definitionでは、migration用DBユーザーのSecrets Manager ARNとしてTerraform output `database_migration_user_secret_arn` を参照する。インフラ側ではAurora PostgreSQLへmaster userで接続し、以下のSQLを実行してDBユーザーと権限を作成する。
 
@@ -94,4 +105,6 @@ Backend側へは、API serviceとworker serviceは`database_app_user_secret_arn`
 
 Worker機能では、Terraformが標準SQS queue、DLQ、queue scoped IAM policy、worker用CloudWatch Log Groupを管理する。Backend側のecspressoは、Terraform output `worker_queue_url`、`worker_log_group_name`、`worker_ecs_service_name`、`worker_ecspresso_env`を使ってworker ECS service/task definitionを管理する。
 
-Terraform側ではFireLens custom image用ECR repositoryを`environments/dev`で作成する。GitHub Actions backend deploy roleにはこのrepositoryへのpush権限と、Terraform output `api_log_group_name`、`migration_log_group_name`、`worker_log_group_name` のログイベントを参照するための`logs:GetLogEvents`権限を付与する。ECS task execution roleにはFireLens image pull権限と、New Relic License Keyを含む外部サービスsecretの取得権限を付与する。CloudWatch Logsへの通常ログ出力はECS task roleに付与した`logs:CreateLogStream`、`logs:PutLogEvents`で行う。
+Scheduled job機能では、Terraformがscheduled-log用ECR repository、CloudWatch Log Group、EventBridge Scheduler、SNS topic/email subscription、Scheduler用IAM role、Scheduler target検証用のbootstrap task definition revisionを管理する。Backend側のdeploy workflowは `scheduled_log_ecr_repository_url` に1つのimageをpushし、`JOB_NAME` を変えた `scheduled_log_task_definition_family` と `scheduled_notification_task_definition_family` の2つのtask definition revisionを登録する。`scheduled_log_scheduler_state` と `scheduled_notification_scheduler_state` のdefaultは `ENABLED` なので、通常の `terraform apply` でSchedulerは有効化される。通知先emailはdevの `notification_email` tfvarで管理する。GitHub Actions backend deploy roleにはScheduler更新権限を付与しない。
+
+Terraform側ではFireLens custom image用ECR repositoryを`environments/dev`で作成する。GitHub Actions backend deploy roleにはこのrepositoryへのpush権限と、Terraform output `api_log_group_name`、`migration_log_group_name`、`worker_log_group_name`、`scheduled_log_log_group_name` のログイベントを参照するための`logs:GetLogEvents`権限を付与する。ECS task execution roleにはFireLens image pull権限と、New Relic License Keyを含む外部サービスsecretの取得権限を付与する。CloudWatch Logsへの通常ログ出力はECS task roleに付与した`logs:CreateLogStream`、`logs:PutLogEvents`で行う。

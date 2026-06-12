@@ -54,6 +54,34 @@ module "cache" {
   ecs_task_security_group_id = module.network.ecs_task_security_group_id
 }
 
+module "scheduler" {
+  source = "../../modules/scheduler"
+
+  name                    = local.name
+  cluster_arn             = module.containers.cluster_arn
+  private_subnet_ids      = module.network.private_subnet_ids
+  security_group_id       = module.network.ecs_task_security_group_id
+  task_role_arn           = module.containers.task_role_arn
+  task_execution_role_arn = module.containers.task_execution_role_arn
+  notification_email      = var.notification_email
+  task_definitions = {
+    scheduled-log = {
+      family                    = "${local.name}-scheduled-log"
+      job_name                  = "log_heartbeat"
+      schedule_expression       = "rate(1 minute)"
+      schedule_state            = var.scheduled_log_scheduler_state
+      bootstrap_container_image = "public.ecr.aws/docker/library/busybox:stable"
+    }
+    scheduled-notification = {
+      family                    = "${local.name}-scheduled-notification"
+      job_name                  = "send_notification"
+      schedule_expression       = "rate(1 day)"
+      schedule_state            = var.scheduled_notification_scheduler_state
+      bootstrap_container_image = "public.ecr.aws/docker/library/busybox:stable"
+    }
+  }
+}
+
 module "backend_deployment" {
   source = "../../modules/backend-deployment"
 
@@ -65,6 +93,7 @@ module "backend_deployment" {
     module.containers.api_log_group_name,
     module.containers.migration_log_group_name,
     module.containers.worker_log_group_name,
+    module.containers.scheduled_log_log_group_name,
   ]
   ecs_task_role_arn = module.containers.task_role_arn
   additional_ecs_task_role_arns = [

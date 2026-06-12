@@ -5,6 +5,7 @@ flowchart TB
     api_repo["API ECR repository"]
     worker_repo["Worker ECR repository"]
     migration_repo["Migration ECR repository"]
+    scheduled_log_repo["Scheduled-log ECR repository"]
     firelens_repo["FireLens ECR repository"]
   end
 
@@ -15,6 +16,17 @@ flowchart TB
     api_logs["API log group"]
     migration_logs["Migration log group"]
     worker_logs["Worker log group"]
+    scheduled_log_logs["Scheduled-log log group"]
+  end
+
+  subgraph scheduler["scheduler"]
+    scheduled_log_schedule["EventBridge Scheduler\nscheduled-log / rate(1 minute)"]
+    scheduled_notification_schedule["EventBridge Scheduler\nscheduled-notification / rate(1 day)"]
+    scheduler_role["Scheduler IAM role"]
+    scheduled_task_family["Scheduled-log task definition family"]
+    scheduled_notification_family["Scheduled-notification task definition family"]
+    scheduled_notifications_topic["SNS topic"]
+    scheduled_notifications_email["SNS email subscription"]
   end
 
   subgraph worker["worker"]
@@ -61,6 +73,7 @@ flowchart TB
 
   root --> registry
   root --> containers
+  root --> scheduler
   root --> worker
   root --> database_module
   root --> network
@@ -69,14 +82,32 @@ flowchart TB
   containers --> api_repo
   containers --> worker_repo
   containers --> migration_repo
+  containers --> scheduled_log_repo
   containers --> firelens_repo
   backend_deployment --> api_repo
   backend_deployment --> worker_repo
   backend_deployment --> migration_repo
+  backend_deployment --> scheduled_log_repo
   backend_deployment --> firelens_repo
   backend_deployment --> worker_logs
+  backend_deployment --> scheduled_log_logs
   backend_deployment --> task_execution_role
   backend_deployment --> task_role
+
+  scheduled_log_schedule --> cluster
+  scheduled_log_schedule --> private
+  scheduled_log_schedule --> ecs_task_sg
+  scheduled_log_schedule --> scheduled_task_family
+  scheduled_notification_schedule --> cluster
+  scheduled_notification_schedule --> private
+  scheduled_notification_schedule --> ecs_task_sg
+  scheduled_notification_schedule --> scheduled_notification_family
+  scheduled_notifications_email --> scheduled_notifications_topic
+  scheduled_notification_family --> scheduled_notifications_topic
+  scheduler_role --> task_execution_role
+  scheduler_role --> task_role
+  scheduler_role --> scheduled_task_family
+  scheduler_role --> scheduled_notification_family
 
   worker_queue --> worker_dlq
   worker_sqs_policy --> worker_queue
